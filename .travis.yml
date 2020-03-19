@@ -1,0 +1,17 @@
+language: node_js
+cache:
+  directories:
+    - ~/.npm
+notifications:
+  email: false
+node_js:
+  - '10'
+  - '11'
+script:
+  - yarn test:prod && yarn build
+after_success:
+  - yarn travis-deploy-once "yarn report-coverage"
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then yarn travis-deploy-once "yarn deploy-docs"; fi
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/

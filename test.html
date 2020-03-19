@@ -1,0 +1,187 @@
+<!--Based on @olado's excellent tester from doT.js-->
+<!--Modified by Ben Gubler-->
+<!--NOTE: You have to serve this file if you want to see the sourcemaps. NPM Package 'serve' works-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta name="description" content="Test out Squirrelly code in the browser here" />
+    <script src="./dist/npm-to-yarn.js"></script>
+    <style>
+      body {
+        background-color: #f4f4f4;
+        color: #555;
+        max-width: 800px;
+        padding: 20px;
+        font-size: 16px;
+        font-weight: 200;
+        margin: 0 auto;
+        font-family: Helvetica Neue, arial, verdana;
+      }
+
+      h2 {
+        text-shadow: 0 1px 2px #fff;
+        margin: 0;
+      }
+
+      h2 span {
+        font-weight: 200;
+        font-size: 14px;
+      }
+
+      a {
+        color: #2b80ff;
+      }
+
+      .smaller {
+        font-size: 0.8em;
+      }
+
+      h4 {
+        margin: 4px 0;
+        font-weight: 400;
+        font-size: 20px;
+      }
+
+      textarea {
+        border: 1px solid lightgrey;
+        outline: none;
+        font-size: 14px;
+        width: 96%;
+        height: 210px;
+        padding: 10px;
+        text-align: left;
+        resize: vertical;
+      }
+
+      .templategroup,
+      .datagroup,
+      .functiongroup,
+      .resultgroup {
+        width: 48%;
+        margin: 4px 2% 4px 0;
+        float: left;
+        min-width: 300px;
+      }
+
+      #function,
+      #result {
+        background: #ddd;
+        height: 212px;
+        padding: 10px;
+        font-size: 14px;
+        overflow-y: auto;
+      }
+
+      #result {
+        white-space: pre;
+      }
+
+      .definegroup {
+        display: none;
+      }
+
+      .templategroup.withdefs .definegroup {
+        display: block;
+      }
+
+      .templategroup.withdefs #template {
+        height: 90px;
+      }
+
+      textarea.defines {
+        height: 60px;
+      }
+
+      .stripgroup {
+        padding-top: 8px;
+        width: 160px;
+        float: left;
+      }
+
+      #sampletabs {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #sampletabs li {
+        float: left;
+        margin: 4px;
+        padding: 4px 8px;
+        background: #ddd;
+        cursor: pointer;
+      }
+
+      #sampletabs li.active {
+        background: #2b80ff;
+        color: #fff;
+      }
+
+      @media all and (max-width: 740px) {
+        .templategroup,
+        .datagroup,
+        .functiongroup,
+        .resultgroup {
+          width: 100%;
+          margin-right: 0;
+        }
+
+        pre {
+          overflow-x: scroll;
+        }
+      }
+    </style>
+    <title>Squirrelly Playground</title>
+  </head>
+
+  <body>
+    <h2>
+      Playground
+      <span
+        >Based on the excellent
+        <a href="http://olado.github.io/doT/index.html">DoT.js</a> website</span
+      >
+    </h2>
+    <div id="samples">
+      <div style="clear:both;height:10px"></div>
+      <div class="templategroup">
+        <h4>NPM</h4>
+        <textarea autocomplete="off" id="npm-text">
+npm install squirrelly --global
+
+npm install squirrelly --save-dev
+</textarea
+        >
+      </div>
+      <div class="resultgroup">
+        <h4>Yarn</h4>
+        <textarea autocomplete="off" id="yarn-text"> </textarea>
+      </div>
+    </div>
+    <script>
+      /* global Sqrl */
+      window.onload = function() {
+        function npmToYarn() {
+          console.clear()
+          var npmText = document.getElementById('npm-text').value
+          document.getElementById('yarn-text').value = n2y(npmText, 'yarn')
+        }
+
+        function yarnToNpm() {
+          console.clear()
+          var yarnText = document.getElementById('yarn-text').value
+          document.getElementById('npm-text').value = n2y(yarnText, 'npm')
+        }
+
+        npmToYarn()
+        document.getElementById('npm-text').addEventListener('input', npmToYarn)
+        document.getElementById('yarn-text').addEventListener('input', yarnToNpm)
+      }
+    </script>
+  </body>
+</html>
