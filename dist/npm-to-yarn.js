@@ -63,7 +63,7 @@
               .replace('--no-package-lock', '--no-lockfile')
               .replace('--save-optional', '--optional')
               .replace('--save-exact', '--exact');
-          if (/--global|-g/.test(ret)) {
+          if (/ --global| -g/.test(ret)) {
               ret = ret.replace(/\s*--global|-g/, '');
               ret = 'global ' + ret;
           }
@@ -75,7 +75,7 @@
               .replace('--save-dev', '--dev')
               .replace(/\s*--save/, '')
               .replace('--no-package-lock', '--no-lockfile');
-          if (/--global|-g/.test(ret)) {
+          if (/ --global| -g/.test(ret)) {
               ret = ret.replace(/\s*--global|-g/, '');
               ret = 'global ' + ret;
           }

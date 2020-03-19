@@ -12,7 +12,7 @@ interface Indexable {
 }
 
 var npmToYarnTable: Indexable = {
-  install: function(command: string) {
+  install: function (command: string) {
     if (/^install *$/.test(command)) {
       return 'install'
     }
@@ -23,41 +23,41 @@ var npmToYarnTable: Indexable = {
       .replace('--no-package-lock', '--no-lockfile')
       .replace('--save-optional', '--optional')
       .replace('--save-exact', '--exact')
-    if (/--global|-g/.test(ret)) {
+    if (/ --global| -g/.test(ret)) {
       ret = ret.replace(/\s*--global|-g/, '')
       ret = 'global ' + ret
     }
     return ret
   },
-  uninstall: function(command: string) {
+  uninstall: function (command: string) {
     var ret = command
       .replace('uninstall', 'remove')
       .replace('--save-dev', '--dev')
       .replace(/\s*--save/, '')
       .replace('--no-package-lock', '--no-lockfile')
-    if (/--global|-g/.test(ret)) {
+    if (/ --global| -g/.test(ret)) {
       ret = ret.replace(/\s*--global|-g/, '')
       ret = 'global ' + ret
     }
     return ret
   },
-  version: function(command: string) {
+  version: function (command: string) {
     return command.replace(/(major|minor|patch)/, '--$1')
   },
-  rebuild: function(command: string) {
+  rebuild: function (command: string) {
     return command.replace('rebuild', 'add --force')
   }
 }
 
 var yarnToNpmTable: Indexable = {
-  add: function(command: string, global?: true) {
+  add: function (command: string, global?: true) {
     var dev
     if (command === 'add --force') {
       return 'rebuild'
     }
     var ret = command
       .replace('add', 'install')
-      .replace(/\s*--dev/, function() {
+      .replace(/\s*--dev/, function () {
         dev = true
         return ''
       })
@@ -73,11 +73,11 @@ var yarnToNpmTable: Indexable = {
     }
     return ret
   },
-  remove: function(command: string, global?: true) {
+  remove: function (command: string, global?: true) {
     var dev
     var ret = command
       .replace('remove', 'uninstall')
-      .replace(/\s*--dev/, function() {
+      .replace(/\s*--dev/, function () {
         dev = true
         return ''
       })
@@ -93,13 +93,13 @@ var yarnToNpmTable: Indexable = {
     }
     return ret
   },
-  version: function(command: string) {
+  version: function (command: string) {
     return command.replace(/--(major|minor|patch)/, '$1')
   },
   install: 'install'
 }
 
-yarnToNpmTable.global = function(command: string) {
+yarnToNpmTable.global = function (command: string) {
   if (/^global add/.test(command)) {
     return (yarnToNpmTable.add as Function)(command.replace(/^global add/, 'add'), true)
   } else if (/^global remove/.test(command)) {
@@ -107,7 +107,7 @@ yarnToNpmTable.global = function(command: string) {
   }
 }
 
-export default function convert(str: string, to: 'npm' | 'yarn'): string {
+export default function convert (str: string, to: 'npm' | 'yarn'): string {
   var returnStr = str
   if (to === 'npm') {
     return returnStr.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
@@ -116,7 +116,7 @@ export default function convert(str: string, to: 'npm' | 'yarn'): string {
   }
 }
 
-function npmToYarn(m: string, command: string): string {
+function npmToYarn (m: string, command: string): string {
   command = (command || '').trim()
   var firstCommand = (/\w+/.exec(command) || [''])[0]
 
@@ -136,7 +136,7 @@ function npmToYarn(m: string, command: string): string {
   }
 }
 
-function yarnToNPM(m: string, command: string): string {
+function yarnToNPM (m: string, command: string): string {
   command = (command || '').trim()
   if (command === '') {
     return 'npm install'
