@@ -65,7 +65,7 @@
               .replace('--save-optional', '--optional')
               .replace('--save-exact', '--exact');
           if (/--global|-g/.test(ret)) {
-              ret = ret.replace(/--global|-g/, '');
+              ret = ret.replace(/\s*--global|-g/, '');
               ret = 'global ' + ret;
           }
           return ret;

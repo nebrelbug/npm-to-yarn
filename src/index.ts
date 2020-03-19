@@ -13,7 +13,6 @@ interface Indexable {
 
 var npmToYarnTable: Indexable = {
   install: function(command: string) {
-    console.log('command: ' + command)
     if (/^install *$/.test(command)) {
       return 'install'
     }
@@ -25,7 +24,7 @@ var npmToYarnTable: Indexable = {
       .replace('--save-optional', '--optional')
       .replace('--save-exact', '--exact')
     if (/--global|-g/.test(ret)) {
-      ret = ret.replace(/--global|-g/, '')
+      ret = ret.replace(/\s*--global|-g/, '')
       ret = 'global ' + ret
     }
     return ret
@@ -37,7 +36,7 @@ var npmToYarnTable: Indexable = {
       .replace(/\s*--save/, '')
       .replace('--no-package-lock', '--no-lockfile')
     if (/--global|-g/.test(ret)) {
-      ret = ret.replace(/--global|-g/, '')
+      ret = ret.replace(/\s*--global|-g/, '')
       ret = 'global ' + ret
     }
     return ret
@@ -97,7 +96,7 @@ var yarnToNpmTable: Indexable = {
   version: function(command: string) {
     return command.replace(/--(major|minor|patch)/, '$1')
   },
-  install: 'install '
+  install: 'install'
 }
 
 yarnToNpmTable.global = function(command: string) {
@@ -118,7 +117,6 @@ export default function convert(str: string, to: 'npm' | 'yarn'): string {
 }
 
 function npmToYarn(m: string, command: string): string {
-  console.log('npm2yarn called with ' + command)
   command = (command || '').trim()
   var firstCommand = (/\w+/.exec(command) || [''])[0]
 
@@ -150,7 +148,7 @@ function yarnToNPM(m: string, command: string): string {
     } else {
       return 'npm ' + command.replace(firstCommand, yarnToNpmTable[firstCommand] as string)
     }
-  } else if (!yarnCLICommands.hasOwnProperty(firstCommand)) {
+  } else if (!yarnCLICommands.includes(firstCommand)) {
     // i.e., yarn grunt -> npm run grunt
     return 'npm run ' + command
   } else {
