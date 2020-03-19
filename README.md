@@ -10,10 +10,9 @@
 [![Travis](https://img.shields.io/travis/com/nebrelbug/npm-to-yarn/master.svg)](https://travis-ci.com/nebrelbug/npm-to-yarn)
 [![All Contributors][logo]](#contributors-)
 [![Coveralls](https://img.shields.io/coveralls/nebrelbug/npm-to-yarn.svg)](https://coveralls.io/github/nebrelbug/npm-to-yarn)
-[![Dev Dependencies](https://img.shields.io/david/dev/nebrelbug/npm-to-yarn)](https://david-dm.org/nebrelbug/npm-to-yarn?type=dev)
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Greenkeeper badge](https://badges.greenkeeper.io/nebrelbug/npm-to-yarn.svg)](https://greenkeeper.io/)
+[![Dev Dependencies](https://img.shields.io/david/dev/nebrelbug/npm-to-yarn)](https://david-dm.org/nebrelbug/npm-to-yarn?type=dev)
 
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/bengubler)
 
