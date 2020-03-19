@@ -27,7 +27,7 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "lint": "eslint src/*.ts test/*.spec.ts examples/* --ext .js,.ts",
+    "lint": "eslint src/*.ts test/*.spec.ts --ext .js,.ts",
     "prebuild": "rimraf dist",
     "build": "tsc --module es6 && rollup -c rollup.config.js",
     "start": "rollup -c rollup.config.js -w",

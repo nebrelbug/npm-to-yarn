@@ -122,7 +122,10 @@ function npmToYarn(m: string, command: string): string {
 
   if (unchangedCLICommands.includes(firstCommand)) {
     return 'yarn ' + command
-  } else if (npmToYarnTable.hasOwnProperty(firstCommand) && npmToYarnTable[firstCommand]) {
+  } else if (
+    Object.prototype.hasOwnProperty.call(npmToYarnTable, firstCommand) &&
+    npmToYarnTable[firstCommand]
+  ) {
     if (typeof npmToYarnTable[firstCommand] === 'function') {
       return 'yarn ' + (npmToYarnTable[firstCommand] as Function)(command)
     } else {
@@ -142,7 +145,10 @@ function yarnToNPM(m: string, command: string): string {
 
   if (unchangedCLICommands.includes(firstCommand)) {
     return 'npm ' + command
-  } else if (yarnToNpmTable.hasOwnProperty(firstCommand) && yarnToNpmTable[firstCommand]) {
+  } else if (
+    Object.prototype.hasOwnProperty.call(yarnToNpmTable, firstCommand) &&
+    yarnToNpmTable[firstCommand]
+  ) {
     if (typeof yarnToNpmTable[firstCommand] === 'function') {
       return 'npm ' + (yarnToNpmTable[firstCommand] as Function)(command)
     } else {

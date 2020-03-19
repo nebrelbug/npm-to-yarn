@@ -53,7 +53,6 @@
 
   var npmToYarnTable = {
       install: function (command) {
-          console.log('command: ' + command);
           if (/^install *$/.test(command)) {
               return 'install';
           }
@@ -77,7 +76,7 @@
               .replace(/\s*--save/, '')
               .replace('--no-package-lock', '--no-lockfile');
           if (/--global|-g/.test(ret)) {
-              ret = ret.replace(/--global|-g/, '');
+              ret = ret.replace(/\s*--global|-g/, '');
               ret = 'global ' + ret;
           }
           return ret;
@@ -140,7 +139,7 @@
       version: function (command) {
           return command.replace(/--(major|minor|patch)/, '$1');
       },
-      install: 'install '
+      install: 'install'
   };
   yarnToNpmTable.global = function (command) {
       if (/^global add/.test(command)) {
@@ -160,13 +159,13 @@
       }
   }
   function npmToYarn(m, command) {
-      console.log('npm2yarn called with ' + command);
       command = (command || '').trim();
       var firstCommand = (/\w+/.exec(command) || [''])[0];
       if (unchangedCLICommands.includes(firstCommand)) {
           return 'yarn ' + command;
       }
-      else if (npmToYarnTable.hasOwnProperty(firstCommand) && npmToYarnTable[firstCommand]) {
+      else if (Object.prototype.hasOwnProperty.call(npmToYarnTable, firstCommand) &&
+          npmToYarnTable[firstCommand]) {
           if (typeof npmToYarnTable[firstCommand] === 'function') {
               return 'yarn ' + npmToYarnTable[firstCommand](command);
           }
@@ -187,7 +186,8 @@
       if (unchangedCLICommands.includes(firstCommand)) {
           return 'npm ' + command;
       }
-      else if (yarnToNpmTable.hasOwnProperty(firstCommand) && yarnToNpmTable[firstCommand]) {
+      else if (Object.prototype.hasOwnProperty.call(yarnToNpmTable, firstCommand) &&
+          yarnToNpmTable[firstCommand]) {
           if (typeof yarnToNpmTable[firstCommand] === 'function') {
               return 'npm ' + yarnToNpmTable[firstCommand](command);
           }
@@ -195,7 +195,7 @@
               return 'npm ' + command.replace(firstCommand, yarnToNpmTable[firstCommand]);
           }
       }
-      else if (!yarnCLICommands.hasOwnProperty(firstCommand)) {
+      else if (!yarnCLICommands.includes(firstCommand)) {
           // i.e., yarn grunt -> npm run grunt
           return 'npm run ' + command;
       }
