@@ -2,36 +2,47 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[logo]: https://img.shields.io/badge/all_contributors-3-orange.svg 'Number of contributors on All-Contributors'
+[logo]: https://img.shields.io/badge/all_contributors-0-orange.svg 'Number of contributors on All-Contributors'
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-![GitHub package.json version (master)](https://img.shields.io/github/package-json/v/squirrellyjs/squirrelly/master?label=current%20version)
-[![Travis](https://img.shields.io/travis/com/squirrellyjs/squirrelly/master.svg)](https://travis-ci.com/squirrellyjs/squirrelly)
+![GitHub package.json version (master)](https://img.shields.io/github/package-json/v/nebrelbug/npm-to-yarn/master?label=current%20version)
+[![Travis](https://img.shields.io/travis/com/nebrelbug/npm-to-yarn/master.svg)](https://travis-ci.com/nebrelbug/npm-to-yarn)
 [![All Contributors][logo]](#contributors-)
-[![Coveralls](https://img.shields.io/coveralls/squirrellyjs/squirrelly.svg)](https://coveralls.io/github/squirrellyjs/squirrelly)
-[![Dev Dependencies](https://img.shields.io/david/dev/squirrellyjs/squirrelly)](https://david-dm.org/squirrellyjs/squirrelly?type=dev)
+[![Coveralls](https://img.shields.io/coveralls/nebrelbug/npm-to-yarn.svg)](https://coveralls.io/github/nebrelbug/npm-to-yarn)
+[![Dev Dependencies](https://img.shields.io/david/dev/nebrelbug/npm-to-yarn)](https://david-dm.org/nebrelbug/npm-to-yarn?type=dev)
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Greenkeeper badge](https://badges.greenkeeper.io/squirrellyjs/squirrelly.svg)](https://greenkeeper.io/)
-[![Join the chat at https://gitter.im/squirrellyjs/Lobby](https://img.shields.io/gitter/room/squirrellyjs/squirrelly?color=%2346BC99)](https://gitter.im/squirrellyjs/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Greenkeeper badge](https://badges.greenkeeper.io/nebrelbug/npm-to-yarn.svg)](https://greenkeeper.io/)
+
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/bengubler)
 
 **Summary**
 
 `npm-to-yarn` is designed to convert NPM CLI commands to their Yarn equivalents (and vice versa).
 
-## Why Squirrelly?
+## Why `npm-to-yarn`?
 
-Simply put, Squirrelly is super lightweight, super fast, super powerful, and super simple.
+`npm-to-yarn` is super helpful in documentation, for example in generating code tabs.
 
 ## 📜 Docs
 
-We know nobody reads through the long and boring documentation in the ReadMe anyway, so head over to the documentation website:
+```js
+import convert from 'npm-to-yarn'
 
-📝 [https://squirrelly.js.org](https://squirrelly.js.org)
+// or
+// var convert = require('npm-to-yarn')
 
-## 📓 Examples
+convert('npm install squirrelly', 'yarn')
+
+// yarn add squirrelly
+```
+
+`npm-to-yarn` exposes a UMD build, so you can also install it with a CDN (it exposes global variable `n2y`)
+
+### API
+
+`convert(command: string, to: 'yarn' | 'npm') -> string`
 
 ## ✔️ Tests
 
