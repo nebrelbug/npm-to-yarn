@@ -4,43 +4,10 @@
   ],
   "imageSize": 100,
   "commit": false,
-  "contributors": [
-    {
-      "login": "nebrelbug",
-      "name": "Ben Gubler",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/25597854?v=4",
-      "profile": "http://www.bengubler.com",
-      "contributions": [
-        "code",
-        "question",
-        "doc",
-        "test"
-      ]
-    },
-    {
-      "login": "clitetailor",
-      "name": "Clite Tailor",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/16368559?v=4",
-      "profile": "http://ducnhatphung@gmail.com",
-      "contributions": [
-        "ideas",
-        "code"
-      ]
-    },
-    {
-      "login": "ichiriac",
-      "name": "Ioan CHIRIAC",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/173203?v=4",
-      "profile": "https://twitter.com/ioan_chiriac",
-      "contributions": [
-        "code",
-        "ideas"
-      ]
-    }
-  ],
+  "contributors": [],
   "contributorsPerLine": 7,
-  "projectName": "squirrelly",
-  "projectOwner": "squirrellyjs",
+  "projectName": "npm-to-yarn",
+  "projectOwner": "nebrelbug",
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true,

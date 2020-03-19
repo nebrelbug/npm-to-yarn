@@ -1,8 +1,5 @@
 import typescript from 'rollup-plugin-typescript2'
 
-// TODO: Someday don't transpile ES6 module dist files to ES5, ex. removing classes
-const pkg = require('./package.json')
-
 export default [
   {
     input: 'src/index.ts', // todo: use rollup-plugin-replace
