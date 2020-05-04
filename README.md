@@ -52,7 +52,7 @@ To be added
 
 ## Projects using `npm-to-yarn`
 
-[Waiting for permissions]
+- [Dynamoose](https://dynamoosejs.com)
 
 ## Contributors
 
