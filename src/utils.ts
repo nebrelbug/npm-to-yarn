@@ -1,13 +1,4 @@
-export var unchangedCLICommands = [
-  'init',
-  'run',
-  'test',
-  'login',
-  'logout',
-  'link',
-  'publish',
-  'cache'
-]
+export var unchangedCLICommands = ['run', 'test', 'login', 'logout', 'link', 'publish', 'cache']
 
 export var yarnCLICommands = [
   'add',
@@ -50,7 +41,6 @@ export var uniqueYarnCLICommands = [
   'add',
   'autoclean',
   'check',
-  'create',
   'generate-lock-entry',
   'global',
   'import',
@@ -68,7 +58,6 @@ export var uniqueYarnCLICommands = [
   'upgrade',
   'upgrade-interactive',
   'versions',
-  'why',
   'workspace',
   'workspaces'
 ]

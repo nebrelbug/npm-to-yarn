@@ -40,6 +40,21 @@ describe('NPM to Yarn tests', () => {
   it("npm whoami can't auto-convert to yarn", () => {
     expect(convert('npm whoami', 'yarn')).toEqual("yarn whoami\n# couldn't auto-convert command")
   })
+
+  it('npm init', () => {
+    expect(convert('npm init', 'yarn')).toEqual('yarn init')
+    expect(convert('npm init -y', 'yarn')).toEqual('yarn init -y')
+    expect(convert('npm init --yes', 'yarn')).toEqual('yarn init --yes')
+    expect(convert('npm init --scope', 'yarn')).toEqual('yarn init')
+    expect(convert('npm init --private', 'yarn')).toEqual('yarn init --private')
+    expect(convert('npm init --unknown-arg', 'yarn')).toEqual('yarn init --unknown-arg')
+    // create
+    expect(convert('npm init esm --yes', 'yarn')).toEqual('yarn create esm --yes')
+    expect(convert('npm init @scope/my-package', 'yarn')).toEqual('yarn create @scope/my-package')
+    expect(convert('npm init react-app ./my-react-app', 'yarn')).toEqual(
+      'yarn create react-app ./my-react-app'
+    )
+  })
 })
 
 describe('Yarn to NPM tests', () => {
@@ -98,6 +113,22 @@ describe('Yarn to NPM tests', () => {
   it("Yarn upgrade-interactive can't auto-convert", () => {
     expect(convert('yarn upgrade-interactive', 'npm')).toEqual(
       "npm upgrade-interactive\n# couldn't auto-convert command"
+    )
+  })
+
+  it('yarn init', () => {
+    expect(convert('yarn init', 'npm')).toEqual('npm init')
+    expect(convert('yarn init -y', 'npm')).toEqual('npm init -y')
+    expect(convert('yarn init --yes', 'npm')).toEqual('npm init --yes')
+    expect(convert('yarn init --private', 'npm')).toEqual('npm init --private')
+    expect(convert('yarn init --unknown-arg', 'npm')).toEqual('npm init --unknown-arg')
+  })
+
+  it('yarn create', () => {
+    expect(convert('yarn create esm --yes', 'npm')).toEqual('npm init esm --yes')
+    expect(convert('yarn create @scope/my-package', 'npm')).toEqual('npm init @scope/my-package')
+    expect(convert('yarn create react-app ./my-react-app', 'npm')).toEqual(
+      'npm init react-app ./my-react-app'
     )
   })
 })

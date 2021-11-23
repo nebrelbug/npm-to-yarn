@@ -46,6 +46,13 @@ var npmToYarnTable: Indexable = {
   },
   rebuild: function (command: string) {
     return command.replace('rebuild', 'add --force')
+  },
+  ls: 'why',
+  init: function (command: string) {
+    if (/^init (?!-).*$/.test(command)) {
+      return command.replace('init', 'create')
+    }
+    return command.replace(' --scope', '')
   }
 }
 
@@ -96,7 +103,10 @@ var yarnToNpmTable: Indexable = {
   version: function (command: string) {
     return command.replace(/--(major|minor|patch)/, '$1')
   },
-  install: 'install'
+  install: 'install',
+  why: 'ls',
+  init: 'init',
+  create: 'init'
 }
 
 yarnToNpmTable.global = function (command: string) {
