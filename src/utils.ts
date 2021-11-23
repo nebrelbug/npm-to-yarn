@@ -1,6 +1,8 @@
-export var unchangedCLICommands = ['run', 'test', 'login', 'logout', 'link', 'publish', 'cache']
+export var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache']
 
 export var yarnCLICommands = [
+  'init',
+  'run',
   'add',
   'audit',
   'autoclean',
@@ -63,6 +65,8 @@ export var uniqueYarnCLICommands = [
 ]
 
 export var npmCLICommands = [
+  'init',
+  'run',
   'access',
   'adduser',
   'audit',

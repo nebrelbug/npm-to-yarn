@@ -47,6 +47,22 @@ var npmToYarnTable: Indexable = {
   rebuild: function (command: string) {
     return command.replace('rebuild', 'add --force')
   },
+  run: function (command: string) {
+    return command.replace(
+      /^run\s?([^\s]+)?(\s--\s--)?(.*)$/,
+      (_, data?: string, dash?: string, rest?: string): string => {
+        var result = ''
+        if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
+          result += data
+        } else {
+          result += 'run ' + (data || '')
+        }
+        if (dash) result += dash.replace(/^\s--/, '')
+        if (rest) result += rest
+        return result
+      }
+    )
+  },
   ls: 'why',
   init: function (command: string) {
     if (/^init (?!-).*$/.test(command)) {
@@ -106,14 +122,14 @@ var yarnToNpmTable: Indexable = {
   install: 'install',
   why: 'ls',
   init: 'init',
-  create: 'init'
-}
-
-yarnToNpmTable.global = function (command: string) {
-  if (/^global add/.test(command)) {
-    return (yarnToNpmTable.add as Function)(command.replace(/^global add/, 'add'), true)
-  } else if (/^global remove/.test(command)) {
-    return (yarnToNpmTable.remove as Function)(command.replace(/^global remove/, 'remove'), true)
+  create: 'init',
+  run: 'run',
+  global: function (command: string) {
+    if (/^global add/.test(command)) {
+      return (yarnToNpmTable.add as Function)(command.replace(/^global add/, 'add'), true)
+    } else if (/^global remove/.test(command)) {
+      return (yarnToNpmTable.remove as Function)(command.replace(/^global remove/, 'remove'), true)
+    }
   }
 }
 
