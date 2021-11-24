@@ -8,7 +8,7 @@ import {
 // keys are NPM, vals are Yarn
 
 interface Indexable {
-  [index: string]: string | Function
+  [index: string]: string | ((command: string) => string)
 }
 
 var npmToYarnTable: Indexable = {
@@ -63,7 +63,37 @@ var npmToYarnTable: Indexable = {
       }
     )
   },
-  ls: 'why',
+  ls: function (command: string) {
+    return command.replace(/^(ls|list)(.*)$/, function (_1, _2: string, args: string): string {
+      var result = 'list'
+      if (args) {
+        var ended = false
+        var packages = []
+        var items = args.split(' ').filter(Boolean)
+        for (var item of items) {
+          if (ended) {
+            result += ' ' + item
+          } else if (item.startsWith('-')) {
+            result += ' --pattern "' + packages.join('|') + '"'
+            packages = []
+            ended = true
+            result += ' ' + item
+          } else {
+            packages.push(item)
+          }
+        }
+        if (packages.length > 0) {
+          result += ' --pattern "' + packages.join('|') + '"'
+        }
+        return result
+      } else {
+        return 'list'
+      }
+    })
+  },
+  list: function (command: string) {
+    return (npmToYarnTable.ls as Function)(command)
+  },
   init: function (command: string) {
     if (/^init (?!-).*$/.test(command)) {
       return command.replace('init', 'create')
@@ -120,7 +150,13 @@ var yarnToNpmTable: Indexable = {
     return command.replace(/--(major|minor|patch)/, '$1')
   },
   install: 'install',
-  why: 'ls',
+  list: function (command: string) {
+    return command
+      .replace(/--pattern ["']([^"']+)["']/, function (_, packages: string) {
+        return packages.split('|').join(' ')
+      })
+      .replace(/^list/, 'ls')
+  },
   init: 'init',
   create: 'init',
   run: 'run',

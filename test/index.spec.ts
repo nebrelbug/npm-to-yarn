@@ -64,6 +64,32 @@ describe('NPM to Yarn tests', () => {
     // with args
     expect(convert('npm run custom -- --version', 'yarn')).toEqual('yarn custom --version')
   })
+
+  it('npm list', () => {
+    expect(convert('npm list', 'yarn')).toEqual('yarn list')
+    expect(convert('npm list package', 'yarn')).toEqual('yarn list --pattern "package"')
+    expect(convert('npm list package package2', 'yarn')).toEqual(
+      'yarn list --pattern "package|package2"'
+    )
+    expect(convert('npm list @scope/package @scope/package2', 'yarn')).toEqual(
+      'yarn list --pattern "@scope/package|@scope/package2"'
+    )
+    expect(convert('npm list @scope/package @scope/package2 --depth=2', 'yarn')).toEqual(
+      'yarn list --pattern "@scope/package|@scope/package2" --depth=2'
+    )
+    // alias
+    expect(convert('npm ls', 'yarn')).toEqual('yarn list')
+    expect(convert('npm ls package', 'yarn')).toEqual('yarn list --pattern "package"')
+    expect(convert('npm ls package package2', 'yarn')).toEqual(
+      'yarn list --pattern "package|package2"'
+    )
+    expect(convert('npm ls @scope/package @scope/package2', 'yarn')).toEqual(
+      'yarn list --pattern "@scope/package|@scope/package2"'
+    )
+    expect(convert('npm ls @scope/package @scope/package2 --depth=2', 'yarn')).toEqual(
+      'yarn list --pattern "@scope/package|@scope/package2" --depth=2'
+    )
+  })
 })
 
 describe('Yarn to NPM tests', () => {
@@ -151,5 +177,16 @@ describe('Yarn to NPM tests', () => {
     expect(convert('yarn custom -- --version', 'npm')).toEqual('npm run custom -- --version')
     expect(convert('yarn run custom --version', 'npm')).toEqual('npm run custom --version')
     expect(convert('yarn run custom -- --version', 'npm')).toEqual('npm run custom -- --version')
+  })
+
+  it('yarn list', () => {
+    expect(convert('yarn list', 'npm')).toEqual('npm ls')
+    expect(convert('yarn list --pattern "package"', 'npm')).toEqual('npm ls package')
+    expect(convert('yarn list --pattern "package|package2"', 'npm')).toEqual(
+      'npm ls package package2'
+    )
+    expect(convert('yarn list --pattern "@scope/package|@scope/package2"', 'npm')).toEqual(
+      'npm ls @scope/package @scope/package2'
+    )
   })
 })

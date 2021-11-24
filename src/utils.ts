@@ -49,7 +49,6 @@ export var uniqueYarnCLICommands = [
   'info',
   'licenses',
   'link',
-  'list',
   'lockfile',
   'policies',
   'remove',
@@ -60,6 +59,7 @@ export var uniqueYarnCLICommands = [
   'upgrade',
   'upgrade-interactive',
   'versions',
+  'why',
   'workspace',
   'workspaces'
 ]
@@ -92,6 +92,7 @@ export var npmCLICommands = [
   'install-test',
   'install',
   'ls',
+  'list',
   'npm',
   'org',
   'outdated',
