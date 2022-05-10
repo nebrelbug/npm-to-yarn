@@ -33,6 +33,13 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm install', 'yarn')).toEqual('yarn install')
   })
 
+  it('npm install --save-exact', () => {
+    expect(convert('npm install --save-exact', 'yarn')).toEqual('yarn add --exact')
+  })
+  it('npm install --save-optional', () => {
+    expect(convert('npm install --save-optional', 'yarn')).toEqual('yarn add --optional')
+  })
+
   it('npm rebuild', () => {
     expect(convert('npm rebuild', 'yarn')).toEqual('yarn add --force')
   })

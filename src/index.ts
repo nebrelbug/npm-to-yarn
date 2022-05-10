@@ -19,10 +19,10 @@ var npmToYarnTable: Indexable = {
     var ret = command
       .replace('install', 'add')
       .replace('--save-dev', '--dev')
+      .replace('--save-exact', '--exact')
+      .replace('--save-optional', '--optional')
       .replace(/\s*--save/, '')
       .replace('--no-package-lock', '--no-lockfile')
-      .replace('--save-optional', '--optional')
-      .replace('--save-exact', '--exact')
     if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
       ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '')
       ret = 'global ' + ret
