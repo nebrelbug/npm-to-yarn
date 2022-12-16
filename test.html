@@ -165,14 +165,14 @@ npm install squirrelly --save-dev
     </div>
     <script>
       /* global Sqrl */
-      window.onload = function() {
-        function npmToYarn() {
+      window.onload = function () {
+        function npmToYarn () {
           console.clear()
           var npmText = document.getElementById('npm-text').value
           document.getElementById('yarn-text').value = n2y(npmText, 'yarn')
         }
 
-        function yarnToNpm() {
+        function yarnToNpm () {
           console.clear()
           var yarnText = document.getElementById('yarn-text').value
           document.getElementById('npm-text').value = n2y(yarnText, 'npm')

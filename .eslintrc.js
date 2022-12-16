@@ -8,8 +8,7 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     // 'standard-with-typescript',
-    'prettier',
-    'prettier/@typescript-eslint'
+    'prettier'
   ],
   ignorePatterns: [
     'node_modules',
@@ -31,7 +30,8 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 0,
     'prefer-const': 0,
     '@typescript-eslint/no-use-before-define': 0,
-    '@typescript-eslint/explicit-function-return-type': 0
+    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/ban-types': 0
   },
   settings: {}
 }
