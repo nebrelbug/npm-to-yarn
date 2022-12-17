@@ -9,6 +9,13 @@
   ],
   "main": "dist/npm-to-yarn.js",
   "typings": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/npm-to-yarn.js",
+      "require": "./dist/npm-to-yarn.js"
+    }
+  },
   "sideEffects": false,
   "files": [
     "dist"
