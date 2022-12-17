@@ -8,7 +8,7 @@ import {
 // keys are NPM, vals are Yarn
 
 interface Indexable {
-  [index: string]: string | Function
+  [index: string]: string | ((command: string) => string)
 }
 
 var npmToYarnTable: Indexable = {
@@ -46,6 +46,59 @@ var npmToYarnTable: Indexable = {
   },
   rebuild: function (command: string) {
     return command.replace('rebuild', 'add --force')
+  },
+  run: function (command: string) {
+    return command.replace(
+      /^run\s?([^\s]+)?(\s--\s--)?(.*)$/,
+      (_, data?: string, dash?: string, rest?: string): string => {
+        var result = ''
+        if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
+          result += data
+        } else {
+          result += 'run ' + (data || '')
+        }
+        if (dash) result += dash.replace(/^\s--/, '')
+        if (rest) result += rest
+        return result
+      }
+    )
+  },
+  ls: function (command: string) {
+    return command.replace(/^(ls|list)(.*)$/, function (_1, _2: string, args: string): string {
+      var result = 'list'
+      if (args) {
+        var ended = false
+        var packages = []
+        var items = args.split(' ').filter(Boolean)
+        for (var item of items) {
+          if (ended) {
+            result += ' ' + item
+          } else if (item.startsWith('-')) {
+            result += ' --pattern "' + packages.join('|') + '"'
+            packages = []
+            ended = true
+            result += ' ' + item
+          } else {
+            packages.push(item)
+          }
+        }
+        if (packages.length > 0) {
+          result += ' --pattern "' + packages.join('|') + '"'
+        }
+        return result
+      } else {
+        return 'list'
+      }
+    })
+  },
+  list: function (command: string) {
+    return (npmToYarnTable.ls as Function)(command)
+  },
+  init: function (command: string) {
+    if (/^init (?!-).*$/.test(command)) {
+      return command.replace('init', 'create')
+    }
+    return command.replace(' --scope', '')
   }
 }
 
@@ -96,14 +149,23 @@ var yarnToNpmTable: Indexable = {
   version: function (command: string) {
     return command.replace(/--(major|minor|patch)/, '$1')
   },
-  install: 'install'
-}
-
-yarnToNpmTable.global = function (command: string) {
-  if (/^global add/.test(command)) {
-    return (yarnToNpmTable.add as Function)(command.replace(/^global add/, 'add'), true)
-  } else if (/^global remove/.test(command)) {
-    return (yarnToNpmTable.remove as Function)(command.replace(/^global remove/, 'remove'), true)
+  install: 'install',
+  list: function (command: string) {
+    return command
+      .replace(/--pattern ["']([^"']+)["']/, function (_, packages: string) {
+        return packages.split('|').join(' ')
+      })
+      .replace(/^list/, 'ls')
+  },
+  init: 'init',
+  create: 'init',
+  run: 'run',
+  global: function (command: string) {
+    if (/^global add/.test(command)) {
+      return (yarnToNpmTable.add as Function)(command.replace(/^global add/, 'add'), true)
+    } else if (/^global remove/.test(command)) {
+      return (yarnToNpmTable.remove as Function)(command.replace(/^global remove/, 'remove'), true)
+    }
   }
 }
 

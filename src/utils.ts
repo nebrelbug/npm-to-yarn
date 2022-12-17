@@ -1,15 +1,8 @@
-export var unchangedCLICommands = [
-  'init',
-  'run',
-  'test',
-  'login',
-  'logout',
-  'link',
-  'publish',
-  'cache'
-]
+export var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache']
 
 export var yarnCLICommands = [
+  'init',
+  'run',
   'add',
   'audit',
   'autoclean',
@@ -50,14 +43,12 @@ export var uniqueYarnCLICommands = [
   'add',
   'autoclean',
   'check',
-  'create',
   'generate-lock-entry',
   'global',
   'import',
   'info',
   'licenses',
   'link',
-  'list',
   'lockfile',
   'policies',
   'remove',
@@ -74,6 +65,8 @@ export var uniqueYarnCLICommands = [
 ]
 
 export var npmCLICommands = [
+  'init',
+  'run',
   'access',
   'adduser',
   'audit',
@@ -99,6 +92,7 @@ export var npmCLICommands = [
   'install-test',
   'install',
   'ls',
+  'list',
   'npm',
   'org',
   'outdated',
