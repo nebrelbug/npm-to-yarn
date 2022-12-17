@@ -4,17 +4,10 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.n2y = factory());
 })(this, (function () { 'use strict';
 
-  var unchangedCLICommands = [
+  var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache'];
+  var yarnCLICommands = [
       'init',
       'run',
-      'test',
-      'login',
-      'logout',
-      'link',
-      'publish',
-      'cache'
-  ];
-  var yarnCLICommands = [
       'add',
       'audit',
       'autoclean',
@@ -59,10 +52,10 @@
           var ret = command
               .replace('install', 'add')
               .replace('--save-dev', '--dev')
-              .replace(/\s*--save/, '')
-              .replace('--no-package-lock', '--no-lockfile')
+              .replace('--save-exact', '--exact')
               .replace('--save-optional', '--optional')
-              .replace('--save-exact', '--exact');
+              .replace(/\s*--save/, '')
+              .replace('--no-package-lock', '--no-lockfile');
           if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
               ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '');
               ret = 'global ' + ret;
@@ -86,6 +79,63 @@
       },
       rebuild: function (command) {
           return command.replace('rebuild', 'add --force');
+      },
+      run: function (command) {
+          return command.replace(/^run\s?([^\s]+)?(\s--\s--)?(.*)$/, function (_, data, dash, rest) {
+              var result = '';
+              if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
+                  result += data;
+              }
+              else {
+                  result += 'run ' + (data || '');
+              }
+              if (dash)
+                  result += dash.replace(/^\s--/, '');
+              if (rest)
+                  result += rest;
+              return result;
+          });
+      },
+      ls: function (command) {
+          return command.replace(/^(ls|list)(.*)$/, function (_1, _2, args) {
+              var result = 'list';
+              if (args) {
+                  var ended = false;
+                  var packages = [];
+                  var items = args.split(' ').filter(Boolean);
+                  for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+                      var item = items_1[_i];
+                      if (ended) {
+                          result += ' ' + item;
+                      }
+                      else if (item.startsWith('-')) {
+                          result += ' --pattern "' + packages.join('|') + '"';
+                          packages = [];
+                          ended = true;
+                          result += ' ' + item;
+                      }
+                      else {
+                          packages.push(item);
+                      }
+                  }
+                  if (packages.length > 0) {
+                      result += ' --pattern "' + packages.join('|') + '"';
+                  }
+                  return result;
+              }
+              else {
+                  return 'list';
+              }
+          });
+      },
+      list: function (command) {
+          return npmToYarnTable.ls(command);
+      },
+      init: function (command) {
+          if (/^init (?!-).*$/.test(command)) {
+              return command.replace('init', 'create');
+          }
+          return command.replace(' --scope', '');
       }
   };
   var yarnToNpmTable = {
@@ -139,14 +189,24 @@
       version: function (command) {
           return command.replace(/--(major|minor|patch)/, '$1');
       },
-      install: 'install'
-  };
-  yarnToNpmTable.global = function (command) {
-      if (/^global add/.test(command)) {
-          return yarnToNpmTable.add(command.replace(/^global add/, 'add'), true);
-      }
-      else if (/^global remove/.test(command)) {
-          return yarnToNpmTable.remove(command.replace(/^global remove/, 'remove'), true);
+      install: 'install',
+      list: function (command) {
+          return command
+              .replace(/--pattern ["']([^"']+)["']/, function (_, packages) {
+              return packages.split('|').join(' ');
+          })
+              .replace(/^list/, 'ls');
+      },
+      init: 'init',
+      create: 'init',
+      run: 'run',
+      global: function (command) {
+          if (/^global add/.test(command)) {
+              return yarnToNpmTable.add(command.replace(/^global add/, 'add'), true);
+          }
+          else if (/^global remove/.test(command)) {
+              return yarnToNpmTable.remove(command.replace(/^global remove/, 'remove'), true);
+          }
       }
   };
   function convert(str, to) {
