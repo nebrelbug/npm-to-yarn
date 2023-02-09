@@ -1,5 +1,3 @@
-'use strict';
-
 var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache'];
 var yarnCLICommands = [
     'init',
@@ -260,5 +258,5 @@ function yarnToNPM(m, command) {
     }
 }
 
-module.exports = convert;
-//# sourceMappingURL=npm-to-yarn.cjs.map
+export { convert as default };
+//# sourceMappingURL=npm-to-yarn.mjs.map

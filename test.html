@@ -10,7 +10,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
     />
     <meta name="description" content="Test out Squirrelly code in the browser here" />
-    <script src="./dist/npm-to-yarn.js"></script>
+    <script src="./dist/npm-to-yarn.umd.js"></script>
     <style>
       body {
         background-color: #f4f4f4;
@@ -148,7 +148,7 @@
       >
     </h2>
     <div id="samples">
-      <div style="clear:both;height:10px"></div>
+      <div style="clear: both; height: 10px"></div>
       <div class="templategroup">
         <h4>NPM</h4>
         <textarea autocomplete="off" id="npm-text">
@@ -166,13 +166,13 @@ npm install squirrelly --save-dev
     <script>
       /* global Sqrl */
       window.onload = function () {
-        function npmToYarn () {
+        function npmToYarn() {
           console.clear()
           var npmText = document.getElementById('npm-text').value
           document.getElementById('yarn-text').value = n2y(npmText, 'yarn')
         }
 
-        function yarnToNpm () {
+        function yarnToNpm() {
           console.clear()
           var yarnText = document.getElementById('yarn-text').value
           document.getElementById('npm-text').value = n2y(yarnText, 'npm')
