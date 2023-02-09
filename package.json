@@ -7,14 +7,15 @@
     "documentation",
     "yarn to npm"
   ],
-  "main": "dist/npm-to-yarn.cjs",
-  "module": "dist/npm-to-yarn.js",
+  "main": "dist/npm-to-yarn.umd.js",
+  "module": "dist/npm-to-yarn.mjs",
   "typings": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/npm-to-yarn.js",
-      "require": "./dist/npm-to-yarn.cjs"
+      "import": "./dist/npm-to-yarn.mjs",
+      "require": "./dist/npm-to-yarn.umd.js",
+      "default": "./dist/npm-to-yarn.umd.js"
     }
   },
   "sideEffects": false,
@@ -34,12 +35,12 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "lint": "eslint src/*.ts test/*.spec.ts --ext .js,.ts",
     "prebuild": "rimraf dist",
-    "build": "tsc --module es6 && rollup -c rollup.config.js",
-    "start": "rollup -c rollup.config.js -w",
+    "build": "tsc --module es6 && rollup -c rollup.config.mjs",
+    "start": "rollup -c rollup.config.mjs -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",

@@ -267,4 +267,4 @@
   return convert;
 
 }));
-//# sourceMappingURL=npm-to-yarn.js.map
+//# sourceMappingURL=npm-to-yarn.umd.js.map
