@@ -8,7 +8,7 @@
 
 ![GitHub package.json version (master)](https://img.shields.io/github/package-json/v/nebrelbug/npm-to-yarn/master?label=current%20version)
 [![Travis](https://img.shields.io/travis/com/nebrelbug/npm-to-yarn/master.svg)](https://travis-ci.com/nebrelbug/npm-to-yarn)
-[![All Contributors][logo]](#contributors-)
+[![All Contributors][logo]](#contributors)
 [![Coveralls](https://img.shields.io/coveralls/nebrelbug/npm-to-yarn.svg)](https://coveralls.io/github/nebrelbug/npm-to-yarn)
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
@@ -40,7 +40,12 @@ convert('npm install squirrelly', 'yarn')
 
 ### API
 
-`convert(command: string, to: 'yarn' | 'npm') -> string`
+```ts
+/**
+ * Converts between npm and yarn command
+ */
+export default function convert(str: string, to: 'npm' | 'yarn'): string;
+```
 
 ## ✔️ Tests
 
@@ -53,6 +58,7 @@ To be added
 ## Projects using `npm-to-yarn`
 
 - [Dynamoose](https://dynamoosejs.com)
+- [Docusaurus](https://docusaurus.io)
 
 ## Contributors
 
