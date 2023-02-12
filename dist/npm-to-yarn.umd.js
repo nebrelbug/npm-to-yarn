@@ -304,26 +304,14 @@
   }
 
   /**
-   * Converts yarn to npm command
-   */
-  function convertToNpm(str) {
-      return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
-  }
-  /**
-   * Converts npm to yarn command
-   */
-  function convertToYarn(str) {
-      return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
-  }
-  /**
    * Converts between npm and yarn command
    */
   function convert(str, to) {
       if (to === 'npm') {
-          return convertToNpm(str);
+          return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
       }
       else {
-          return convertToYarn(str);
+          return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
       }
   }
 

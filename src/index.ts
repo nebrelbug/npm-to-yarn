@@ -2,26 +2,12 @@ import { yarnToNPM } from './yarnToNpm'
 import { npmToYarn } from './npmToYarn'
 
 /**
- * Converts yarn to npm command
- */
-function convertToNpm(str: string) {
-  return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
-}
-
-/**
- * Converts npm to yarn command
- */
-function convertToYarn(str: string) {
-  return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn)
-}
-
-/**
  * Converts between npm and yarn command
  */
 export default function convert(str: string, to: 'npm' | 'yarn'): string {
   if (to === 'npm') {
-    return convertToNpm(str)
+    return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
   } else {
-    return convertToYarn(str)
+    return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn)
   }
 }
