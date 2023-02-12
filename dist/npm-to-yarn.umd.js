@@ -102,7 +102,7 @@
               return ['rebuild'];
           }
           args[0] = 'install';
-          if (!args.includes('--dev')) {
+          if (!args.includes('--dev') && !args.includes('--exact') && !args.includes('--optional')) {
               args.push('--save');
           }
           return convertAddRemoveArgs(args);
@@ -194,15 +194,15 @@
               args.unshift('global');
           }
           return args.map(function (item) {
-              if (item === '--save-dev')
+              if (item === '--save-dev' || item === '-D')
                   return '--dev';
-              else if (item === '--save')
+              else if (item === '--save' || item === '-S')
                   return '';
               else if (item === '--no-package-lock')
                   return '--no-lockfile';
               else if (item === '--save-optional')
                   return '--optional';
-              else if (item === '--save-exact')
+              else if (item === '--save-exact' || item === '-E')
                   return '--exact';
               else if (item === '--global' || item === '-g')
                   return '';
@@ -210,6 +210,7 @@
           });
       },
       i: function (args) {
+          args[0] = 'install';
           return npmToYarnTable.install(args);
       },
       uninstall: function (args) {

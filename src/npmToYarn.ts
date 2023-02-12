@@ -13,16 +13,17 @@ const npmToYarnTable = {
     }
 
     return args.map((item) => {
-      if (item === '--save-dev') return '--dev'
-      else if (item === '--save') return ''
+      if (item === '--save-dev' || item === '-D') return '--dev'
+      else if (item === '--save' || item === '-S') return ''
       else if (item === '--no-package-lock') return '--no-lockfile'
       else if (item === '--save-optional') return '--optional'
-      else if (item === '--save-exact') return '--exact'
+      else if (item === '--save-exact' || item === '-E') return '--exact'
       else if (item === '--global' || item === '-g') return ''
       return item
     })
   },
   i(args: string[]) {
+    args[0] = 'install'
     return npmToYarnTable.install(args)
   },
   uninstall(args: string[]) {

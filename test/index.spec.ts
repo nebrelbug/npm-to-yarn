@@ -48,13 +48,32 @@ describe('NPM to Yarn tests', () => {
 
   it('npm install', () => {
     expect(convert('npm install', 'yarn')).toEqual('yarn install')
+    expect(convert('npm i', 'yarn')).toEqual('yarn install')
+  })
+
+  it('npm install --save', () => {
+    expect(convert('npm install --save test', 'yarn')).toEqual('yarn add test')
+    expect(convert('npm install -S test', 'yarn')).toEqual('yarn add test')
+    expect(convert('npm i --save test', 'yarn')).toEqual('yarn add test')
+    expect(convert('npm i -S test', 'yarn')).toEqual('yarn add test')
   })
 
   it('npm install --save-exact', () => {
     expect(convert('npm install --save-exact', 'yarn')).toEqual('yarn add --exact')
+    expect(convert('npm install -E', 'yarn')).toEqual('yarn add --exact')
+    expect(convert('npm i --save-exact', 'yarn')).toEqual('yarn add --exact')
+    expect(convert('npm i -E', 'yarn')).toEqual('yarn add --exact')
   })
   it('npm install --save-optional', () => {
     expect(convert('npm install --save-optional', 'yarn')).toEqual('yarn add --optional')
+    expect(convert('npm i --save-optional', 'yarn')).toEqual('yarn add --optional')
+    expect(convert('npm i --save-optional test', 'yarn')).toEqual('yarn add --optional test')
+  })
+  it('npm install --save-dev', () => {
+    expect(convert('npm install --save-dev', 'yarn')).toEqual('yarn add --dev')
+    expect(convert('npm install -D', 'yarn')).toEqual('yarn add --dev')
+    expect(convert('npm i --save-dev', 'yarn')).toEqual('yarn add --dev')
+    expect(convert('npm i -D', 'yarn')).toEqual('yarn add --dev')
   })
 
   it('npm rebuild', () => {
@@ -145,10 +164,10 @@ describe('Yarn to NPM tests', () => {
       'npm install squirrelly --no-package-lock --save'
     )
     expect(convert('yarn add squirrelly --optional', 'npm')).toEqual(
-      'npm install squirrelly --save-optional --save'
+      'npm install squirrelly --save-optional'
     )
     expect(convert('yarn add squirrelly --exact', 'npm')).toEqual(
-      'npm install squirrelly --save-exact --save'
+      'npm install squirrelly --save-exact'
     )
   })
 

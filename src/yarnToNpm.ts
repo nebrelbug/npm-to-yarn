@@ -24,7 +24,7 @@ const yarnToNpmTable = {
       return ['rebuild']
     }
     args[0] = 'install'
-    if (!args.includes('--dev')) {
+    if (!args.includes('--dev') && !args.includes('--exact') && !args.includes('--optional')) {
       args.push('--save')
     }
     return convertAddRemoveArgs(args)
