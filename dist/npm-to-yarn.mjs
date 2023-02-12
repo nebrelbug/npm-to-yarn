@@ -126,7 +126,7 @@ var yarnToNpmTable = {
     list: function (args) {
         args[0] = 'ls';
         var patternIndex = args.findIndex(function (item) { return item === '--pattern'; });
-        if (patternIndex && args[patternIndex + 1]) {
+        if (patternIndex >= 0 && args[patternIndex + 1]) {
             var packages = args[patternIndex + 1].replace(/["']([^"']+)["']/, '$1').split('|');
             args.splice(patternIndex, 2, packages.join(' '));
         }
