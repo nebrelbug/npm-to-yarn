@@ -15,6 +15,7 @@ describe('NPM to Yarn tests', () => {
       'yarn add squirrelly --optional'
     )
     expect(convert('npm i squirrelly --save-exact', 'yarn')).toEqual('yarn add squirrelly --exact')
+    expect(convert('npm install pkg --save-exact', 'yarn')).toEqual('yarn add pkg --exact')
   })
 
   it('Simple convert works w/ remove', () => {
@@ -68,6 +69,13 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm start', 'yarn')).toEqual('yarn start')
     expect(convert('npm stop', 'yarn')).toEqual('yarn stop')
     expect(convert('npm test', 'yarn')).toEqual('yarn test')
+  })
+
+  it('npm with dash-dash', () => {
+    expect(convert('npm run test -- --version', 'yarn')).toEqual('yarn run test --version')
+    expect(convert('npm run test -- -v', 'yarn')).toEqual('yarn run test -v')
+    expect(convert('npm test -- --version', 'yarn')).toEqual('yarn test --version')
+    expect(convert('npm test -- -v', 'yarn')).toEqual('yarn test -v')
   })
 
   it('npm init', () => {

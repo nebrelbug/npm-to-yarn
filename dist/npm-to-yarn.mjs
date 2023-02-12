@@ -238,10 +238,6 @@ var npmToYarnTable = {
         if (args[1] && !unchangedCLICommands.includes(args[1]) && !yarnCLICommands.includes(args[1])) {
             args.splice(0, 1);
         }
-        var index = args.findIndex(function (a) { return a === '--'; });
-        if (index >= 0) {
-            args.splice(index, 1);
-        }
         return args;
     },
     exec: function (args) {
@@ -278,8 +274,12 @@ var npmToYarnTable = {
 };
 function npmToYarn(_m, command) {
     var args = parse((command || '').trim());
+    var index = args.findIndex(function (a) { return a === '--'; });
+    if (index >= 0) {
+        args.splice(index, 1);
+    }
     if (unchangedCLICommands.includes(args[0])) {
-        return 'yarn ' + command;
+        return 'yarn ' + args.join(' ');
     }
     else if (args[0] in npmToYarnTable) {
         var converter = npmToYarnTable[args[0]];

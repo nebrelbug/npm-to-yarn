@@ -54,10 +54,6 @@ const npmToYarnTable = {
     if (args[1] && !unchangedCLICommands.includes(args[1]) && !yarnCLICommands.includes(args[1])) {
       args.splice(0, 1)
     }
-    const index = args.findIndex((a) => a === '--')
-    if (index >= 0) {
-      args.splice(index, 1)
-    }
     return args
   },
   exec(args: string[]) {
@@ -97,8 +93,13 @@ const npmToYarnTable = {
 export function npmToYarn(_m: string, command: string): string {
   let args = parse((command || '').trim())
 
+  const index = args.findIndex((a) => a === '--')
+  if (index >= 0) {
+    args.splice(index, 1)
+  }
+
   if (unchangedCLICommands.includes(args[0])) {
-    return 'yarn ' + command
+    return 'yarn ' + args.join(' ')
   } else if (args[0] in npmToYarnTable) {
     const converter = npmToYarnTable[args[0] as keyof typeof npmToYarnTable]
 
