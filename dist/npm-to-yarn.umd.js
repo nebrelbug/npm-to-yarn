@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.n2y = {}));
-})(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.n2y = factory());
+})(this, (function () { 'use strict';
 
   var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache'];
   var yarnCLICommands = [
@@ -326,11 +326,7 @@
       }
   }
 
-  exports.convertToNpm = convertToNpm;
-  exports.convertToYarn = convertToYarn;
-  exports.default = convert;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return convert;
 
 }));
 //# sourceMappingURL=npm-to-yarn.umd.js.map

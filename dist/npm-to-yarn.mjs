@@ -320,5 +320,5 @@ function convert(str, to) {
     }
 }
 
-export { convertToNpm, convertToYarn, convert as default };
+export { convert as default };
 //# sourceMappingURL=npm-to-yarn.mjs.map
