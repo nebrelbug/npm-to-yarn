@@ -48,6 +48,12 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm whoami', 'yarn')).toEqual("yarn whoami\n# couldn't auto-convert command")
   })
 
+  it('npm custom', () => {
+    expect(convert('npm start', 'yarn')).toEqual('yarn start')
+    expect(convert('npm stop', 'yarn')).toEqual('yarn stop')
+    expect(convert('npm test', 'yarn')).toEqual('yarn test')
+  })
+
   it('npm init', () => {
     expect(convert('npm init', 'yarn')).toEqual('yarn init')
     expect(convert('npm init -y', 'yarn')).toEqual('yarn init -y')
@@ -70,6 +76,15 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm run run', 'yarn')).toEqual('yarn run run')
     // with args
     expect(convert('npm run custom -- --version', 'yarn')).toEqual('yarn custom --version')
+  })
+
+  it('npm exec', () => {
+    expect(convert('npm exec custom', 'yarn')).toEqual('yarn custom')
+    expect(convert('npm exec add', 'yarn')).toEqual('yarn run add')
+    expect(convert('npm exec install', 'yarn')).toEqual('yarn run install')
+    expect(convert('npm exec run', 'yarn')).toEqual('yarn run run')
+    // with args
+    expect(convert('npm exec custom -- --version', 'yarn')).toEqual('yarn custom --version')
   })
 
   it('npm list', () => {
@@ -172,6 +187,12 @@ describe('Yarn to NPM tests', () => {
     expect(convert('yarn create react-app ./my-react-app', 'npm')).toEqual(
       'npm init react-app ./my-react-app'
     )
+  })
+
+  it('npm custom', () => {
+    expect(convert('yarn start', 'npm')).toEqual('npm start')
+    expect(convert('yarn stop', 'npm')).toEqual('npm stop')
+    expect(convert('yarn test', 'npm')).toEqual('npm test')
   })
 
   it('yarn run', () => {

@@ -1,4 +1,3 @@
-export declare var unchangedCLICommands: string[];
-export declare var yarnCLICommands: string[];
-export declare var uniqueYarnCLICommands: string[];
-export declare var npmCLICommands: string[];
+export declare const unchangedCLICommands: string[];
+export declare const yarnCLICommands: string[];
+export declare const npmCLICommands: string[];

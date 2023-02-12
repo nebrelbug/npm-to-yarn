@@ -1,6 +1,6 @@
-export var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache']
+export const unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache']
 
-export var yarnCLICommands = [
+export const yarnCLICommands = [
   'init',
   'run',
   'add',
@@ -29,6 +29,7 @@ export var yarnCLICommands = [
   'self-update',
   'tag',
   'team',
+  'link',
   'unlink',
   'upgrade',
   'upgrade-interactive',
@@ -36,35 +37,10 @@ export var yarnCLICommands = [
   'versions',
   'why',
   'workspace',
-  'workspaces'
+  'workspaces',
 ]
 
-export var uniqueYarnCLICommands = [
-  'add',
-  'autoclean',
-  'check',
-  'generate-lock-entry',
-  'global',
-  'import',
-  'info',
-  'licenses',
-  'link',
-  'lockfile',
-  'policies',
-  'remove',
-  'run',
-  'self-update',
-  'tag',
-  'unlink',
-  'upgrade',
-  'upgrade-interactive',
-  'versions',
-  'why',
-  'workspace',
-  'workspaces'
-]
-
-export var npmCLICommands = [
+export const npmCLICommands = [
   'init',
   'run',
   'access',
@@ -120,5 +96,5 @@ export var npmCLICommands = [
   'update',
   'version',
   'view',
-  'whoami'
+  'whoami',
 ]
