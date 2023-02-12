@@ -154,6 +154,8 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm ls @scope/package @scope/package2 --depth=2', 'yarn')).toEqual(
       'yarn list --pattern "@scope/package|@scope/package2" --depth=2'
     )
+    expect(convert('npm ls --production', 'yarn')).toEqual('yarn list --production')
+    expect(convert('npm ls --development', 'yarn')).toEqual('yarn list --development')
   })
 })
 
@@ -274,5 +276,7 @@ describe('Yarn to NPM tests', () => {
     expect(convert('yarn list --pattern "@scope/package|@scope/package2"', 'npm')).toEqual(
       'npm ls @scope/package @scope/package2'
     )
+    expect(convert('yarn list --production', 'npm')).toEqual('npm ls --production')
+    expect(convert('yarn list --development', 'npm')).toEqual('npm ls --development')
   })
 })

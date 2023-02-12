@@ -54,7 +54,7 @@ const yarnToNpmTable = {
   list(args: string[]) {
     args[0] = 'ls'
     const patternIndex = args.findIndex((item) => item === '--pattern')
-    if (patternIndex && args[patternIndex + 1]) {
+    if (patternIndex >= 0 && args[patternIndex + 1]) {
       const packages = args[patternIndex + 1].replace(/["']([^"']+)["']/, '$1').split('|')
       args.splice(patternIndex, 2, packages.join(' '))
     }
