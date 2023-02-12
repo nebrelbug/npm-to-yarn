@@ -60,6 +60,7 @@ export const npmCLICommands = [
   'doctor',
   'edit',
   'explore',
+  'exec',
   'fund',
   'help-search',
   'help',

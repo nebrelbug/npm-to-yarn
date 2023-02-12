@@ -39,64 +39,98 @@ var yarnCLICommands = [
     'workspaces',
 ];
 
+function parse(command) {
+    var args = [];
+    var lastQuote = false;
+    var escaped = false;
+    var part = '';
+    for (var i = 0; i < command.length; ++i) {
+        var char = command.charAt(i);
+        if (char === '\\') {
+            part += char;
+            escaped = true;
+        }
+        else {
+            if (char === ' ' && !lastQuote) {
+                args.push(part);
+                part = '';
+            }
+            else if (!escaped && (char === '"' || char === "'")) {
+                part += char;
+                if (char === lastQuote) {
+                    lastQuote = false;
+                }
+                else if (!lastQuote) {
+                    lastQuote = char;
+                }
+            }
+            else {
+                part += char;
+            }
+            escaped = false;
+        }
+    }
+    args.push(part);
+    return args;
+}
+
+function convertAddRemoveArgs(args) {
+    return args.map(function (item) {
+        switch (item) {
+            case '--no-lockfile':
+                return '--no-package-lock';
+            case '--dev':
+                return '--save-dev';
+            case '--optional':
+                return '--save-optional';
+            case '--exact':
+                return '--save-exact';
+            default:
+                return item;
+        }
+    });
+}
 var yarnToNpmTable = {
-    add: function (command, global) {
-        var dev;
-        if (command === 'add --force') {
-            return 'rebuild';
+    add: function (args) {
+        if (args[1] === '--force') {
+            return ['rebuild'];
         }
-        var ret = command
-            .replace('add', 'install')
-            .replace(/\s*--dev/, function () {
-            dev = true;
-            return '';
-        })
-            .replace('--no-lockfile', '--no-package-lock')
-            .replace('--optional', '--save-optional')
-            .replace('--exact', '--save-exact');
-        if (dev) {
-            ret += ' --save-dev';
+        args[0] = 'install';
+        if (!args.includes('--dev')) {
+            args.push('--save');
         }
-        else if (global) {
-            ret += ' --global';
-        }
-        else {
-            ret += ' --save';
-        }
-        return ret;
+        return convertAddRemoveArgs(args);
     },
-    remove: function (command, global) {
-        var dev;
-        var ret = command
-            .replace('remove', 'uninstall')
-            .replace(/\s*--dev/, function () {
-            dev = true;
-            return '';
-        })
-            .replace('--no-lockfile', '--no-package-lock')
-            .replace('--optional', '--save-optional')
-            .replace('--exact', '--save-exact');
-        if (dev) {
-            ret += ' --save-dev';
+    remove: function (args) {
+        args[0] = 'uninstall';
+        if (!args.includes('--dev')) {
+            args.push('--save');
         }
-        else if (global) {
-            ret += ' --global';
-        }
-        else {
-            ret += ' --save';
-        }
-        return ret;
+        return convertAddRemoveArgs(args);
     },
-    version: function (command) {
-        return command.replace(/--(major|minor|patch)/, '$1');
+    version: function (args) {
+        return args.map(function (item) {
+            switch (item) {
+                case '--major':
+                    return 'major';
+                case '--minor':
+                    return 'minor';
+                case '--patch':
+                    return 'patch';
+                default:
+                    return item;
+            }
+        });
     },
     install: 'install',
-    list: function (command) {
-        return command
-            .replace(/--pattern ["']([^"']+)["']/, function (_, packages) {
-            return packages.split('|').join(' ');
-        })
-            .replace(/^list/, 'ls');
+    list: function (args) {
+        args[0] = 'ls';
+        var patternIndex = args.findIndex(function (item) { return item === '--pattern'; });
+        if (patternIndex && args[patternIndex + 1]) {
+            var packages = args[patternIndex + 1].replace(/["']([^"']+)["']/, '$1').split('|');
+            args.splice(patternIndex, 2, packages.join(' '));
+        }
+        return args;
     },
     init: 'init',
     create: 'init',
@@ -104,14 +138,15 @@ var yarnToNpmTable = {
     start: 'start',
     stop: 'stop',
     test: 'test',
-    global: function (command) {
-        if (/^global add/.test(command)) {
-            return yarnToNpmTable.add(command.replace(/^global add/, 'add'), true);
+    global: function (args) {
+        if (args[1] === 'add' || args[1] === 'remove') {
+            args.splice(0, 2, args[1] === 'add' ? 'install' : 'uninstall');
+            args.push('--global');
+            return convertAddRemoveArgs(args);
         }
-        else if (/^global remove/.test(command)) {
-            return yarnToNpmTable.remove(command.replace(/^global remove/, 'remove'), true);
-        }
-        return 'npm ' + command + "\n# couldn't auto-convert command";
+        // TODO: find better way
+        args.push("\n# couldn't auto-convert command");
+        return args;
     },
 };
 function yarnToNPM(_m, command) {
@@ -119,18 +154,20 @@ function yarnToNPM(_m, command) {
     if (command === '') {
         return 'npm install';
     }
+    var args = parse(command);
     var firstCommand = (/\w+/.exec(command) || [''])[0];
-    if (unchangedCLICommands.includes(firstCommand)) {
+    if (unchangedCLICommands.includes(args[0])) {
         return 'npm ' + command;
     }
-    if (firstCommand in yarnToNpmTable) {
-        var converter = yarnToNpmTable[firstCommand];
+    else if (args[0] in yarnToNpmTable) {
+        var converter = yarnToNpmTable[args[0]];
         if (typeof converter === 'function') {
-            return 'npm ' + converter(command);
+            args = converter(args);
         }
         else {
-            return 'npm ' + command.replace(firstCommand, converter);
+            args[0] = converter;
         }
+        return 'npm ' + args.filter(Boolean).join(' ');
     }
     else if (!yarnCLICommands.includes(firstCommand)) {
         // i.e., yarn grunt -> npm run grunt
@@ -142,132 +179,117 @@ function yarnToNPM(_m, command) {
 }
 
 var npmToYarnTable = {
-    install: function (command) {
-        if (/^install *$/.test(command)) {
-            return 'install';
+    install: function (args) {
+        if (args.length === 1) {
+            return args;
         }
-        var ret = command
-            .replace('install', 'add')
-            .replace('--save-dev', '--dev')
-            .replace('--no-package-lock', '--no-lockfile')
-            .replace('--save-optional', '--optional')
-            .replace('--save-exact', '--exact')
-            .replace(/\s*--save/, '');
-        if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
-            ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '');
-            ret = 'global ' + ret;
+        args[0] = 'add';
+        if (args.includes('--global') || args.includes('-g')) {
+            args.unshift('global');
         }
-        return ret;
-    },
-    uninstall: function (command) {
-        var ret = command
-            .replace('uninstall', 'remove')
-            .replace('--save-dev', '--dev')
-            .replace(/\s*--save/, '')
-            .replace('--no-package-lock', '--no-lockfile');
-        if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
-            ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '');
-            ret = 'global ' + ret;
-        }
-        return ret;
-    },
-    version: function (command) {
-        return command.replace(/(major|minor|patch)/, '--$1');
-    },
-    rebuild: function (command) {
-        return command.replace('rebuild', 'add --force');
-    },
-    exec: function (command) {
-        return command.replace(/^exec\s?([^\s]+)?(\s--\s--)?(.*)$/, function (_, data, dash, rest) {
-            var result = '';
-            if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
-                result += data;
-            }
-            else {
-                result += 'run ' + (data || '');
-            }
-            if (dash)
-                result += dash.replace(/^\s--/, '');
-            if (rest)
-                result += rest;
-            return result;
+        return args.map(function (item) {
+            if (item === '--save-dev')
+                return '--dev';
+            else if (item === '--save')
+                return '';
+            else if (item === '--no-package-lock')
+                return '--no-lockfile';
+            else if (item === '--save-optional')
+                return '--optional';
+            else if (item === '--save-exact')
+                return '--exact';
+            else if (item === '--global' || item === '-g')
+                return '';
+            return item;
         });
     },
-    run: function (command) {
-        return command.replace(/^run\s?([^\s]+)?(\s--\s--)?(.*)$/, function (_, data, dash, rest) {
-            var result = '';
-            if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
-                result += data;
-            }
-            else {
-                result += 'run ' + (data || '');
-            }
-            if (dash)
-                result += dash.replace(/^\s--/, '');
-            if (rest)
-                result += rest;
-            return result;
-        });
+    i: function (args) {
+        return npmToYarnTable.install(args);
     },
-    ls: function (command) {
-        return command.replace(/^(ls|list)(.*)$/, function (_1, _2, args) {
-            var result = 'list';
-            if (args) {
-                var ended = false;
-                var packages = [];
-                var items = args.split(' ').filter(Boolean);
-                for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
-                    var item = items_1[_i];
-                    if (ended) {
-                        result += ' ' + item;
-                    }
-                    else if (item.startsWith('-')) {
-                        result += ' --pattern "' + packages.join('|') + '"';
-                        packages = [];
-                        ended = true;
-                        result += ' ' + item;
-                    }
-                    else {
-                        packages.push(item);
-                    }
-                }
-                if (packages.length > 0) {
-                    result += ' --pattern "' + packages.join('|') + '"';
-                }
-                return result;
-            }
-            else {
-                return 'list';
-            }
-        });
-    },
-    list: function (command) {
-        return npmToYarnTable.ls(command);
-    },
-    init: function (command) {
-        if (/^init (?!-).*$/.test(command)) {
-            return command.replace('init', 'create');
+    uninstall: function (args) {
+        args[0] = 'remove';
+        if (args.includes('--global') || args.includes('-g')) {
+            args.unshift('global');
         }
-        return command.replace(' --scope', '');
+        return args.map(function (item) {
+            if (item === '--save-dev')
+                return '--dev';
+            else if (item === '--save')
+                return '';
+            else if (item === '--no-package-lock')
+                return '--no-lockfile';
+            else if (item === '--global' || item === '-g')
+                return '';
+            return item;
+        });
+    },
+    version: function (args) {
+        return args.map(function (item) {
+            if (['major', 'minor', 'patch'].includes(item))
+                return "--".concat(item);
+            return item;
+        });
+    },
+    rebuild: function (args) {
+        args[0] = 'add --force';
+        return args;
+    },
+    run: function (args) {
+        if (args[1] && !unchangedCLICommands.includes(args[1]) && !yarnCLICommands.includes(args[1])) {
+            args.splice(0, 1);
+        }
+        var index = args.findIndex(function (a) { return a === '--'; });
+        if (index >= 0) {
+            args.splice(index, 1);
+        }
+        return args;
+    },
+    exec: function (args) {
+        args[0] = 'run';
+        return npmToYarnTable.run(args);
+    },
+    ls: function (args) {
+        args[0] = 'list';
+        var ended = false;
+        var packages = args.filter(function (item, id) {
+            if (id > 0 && !ended) {
+                ended = item.startsWith('-');
+                return !ended;
+            }
+            return false;
+        });
+        if (packages.length > 0) {
+            args.splice(1, packages.length, '--pattern', '"' + packages.join('|') + '"');
+        }
+        return args;
+    },
+    list: function (args) {
+        return npmToYarnTable.ls(args);
+    },
+    init: function (args) {
+        if (args[1] && !args[1].startsWith('-')) {
+            args[0] = 'create';
+        }
+        return args.filter(function (item) { return item !== '--scope'; });
     },
     start: 'start',
     stop: 'stop',
     test: 'test',
 };
 function npmToYarn(_m, command) {
-    command = (command || '').trim();
-    var firstCommand = (/\w+/.exec(command) || [''])[0];
-    if (unchangedCLICommands.includes(firstCommand)) {
+    var args = parse((command || '').trim());
+    if (unchangedCLICommands.includes(args[0])) {
         return 'yarn ' + command;
     }
-    if (firstCommand in npmToYarnTable) {
-        var converter = npmToYarnTable[firstCommand];
+    else if (args[0] in npmToYarnTable) {
+        var converter = npmToYarnTable[args[0]];
         if (typeof converter === 'function') {
-            return 'yarn ' + converter(command);
+            args = converter(args);
         }
         else {
-            return 'yarn ' + command.replace(firstCommand, converter);
+            args[0] = converter;
         }
+        return 'yarn ' + args.filter(Boolean).join(' ');
     }
     else {
         return 'yarn ' + command + "\n# couldn't auto-convert command";

@@ -1,109 +1,93 @@
 import { unchangedCLICommands, yarnCLICommands } from './utils'
+import { parse } from './command'
 
 const npmToYarnTable = {
-  install(command: string) {
-    if (/^install *$/.test(command)) {
-      return 'install'
+  install(args: string[]) {
+    if (args.length === 1) {
+      return args
     }
-    let ret = command
-      .replace('install', 'add')
-      .replace('--save-dev', '--dev')
-      .replace('--save-optional', '--optional')
-      .replace('--save-exact', '--exact')
-      .replace('--no-package-lock', '--no-lockfile')
-      .replace(/\s*--save/, '')
-    if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
-      ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '')
-      ret = 'global ' + ret
+    args[0] = 'add'
+
+    if (args.includes('--global') || args.includes('-g')) {
+      args.unshift('global')
     }
-    return ret
-  },
-  uninstall(command: string) {
-    let ret = command
-      .replace('uninstall', 'remove')
-      .replace('--save-dev', '--dev')
-      .replace(/\s*--save/, '')
-      .replace('--no-package-lock', '--no-lockfile')
-    if (/ -(?:-global|g)(?![^\b])/.test(ret)) {
-      ret = ret.replace(/ -(?:-global|g)(?![^\b])/, '')
-      ret = 'global ' + ret
-    }
-    return ret
-  },
-  version(command: string) {
-    return command.replace(/(major|minor|patch)/, '--$1')
-  },
-  rebuild(command: string) {
-    return command.replace('rebuild', 'add --force')
-  },
-  exec (command: string) {
-    return command.replace(
-      /^exec\s?([^\s]+)?(\s--\s--)?(.*)$/,
-      (_, data?: string, dash?: string, rest?: string): string => {
-        let result = ''
-        if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
-          result += data
-        } else {
-          result += 'run ' + (data || '')
-        }
-        if (dash) result += dash.replace(/^\s--/, '')
-        if (rest) result += rest
-        return result
-      }
-    )
-  },
-  run(command: string) {
-    return command.replace(
-      /^run\s?([^\s]+)?(\s--\s--)?(.*)$/,
-      (_, data?: string, dash?: string, rest?: string): string => {
-        let result = ''
-        if (data && !unchangedCLICommands.includes(data) && !yarnCLICommands.includes(data)) {
-          result += data
-        } else {
-          result += 'run ' + (data || '')
-        }
-        if (dash) result += dash.replace(/^\s--/, '')
-        if (rest) result += rest
-        return result
-      }
-    )
-  },
-  ls(command: string) {
-    return command.replace(/^(ls|list)(.*)$/, function (_1, _2: string, args: string): string {
-      let result = 'list'
-      if (args) {
-        let ended = false
-        let packages = []
-        const items = args.split(' ').filter(Boolean)
-        for (const item of items) {
-          if (ended) {
-            result += ' ' + item
-          } else if (item.startsWith('-')) {
-            result += ' --pattern "' + packages.join('|') + '"'
-            packages = []
-            ended = true
-            result += ' ' + item
-          } else {
-            packages.push(item)
-          }
-        }
-        if (packages.length > 0) {
-          result += ' --pattern "' + packages.join('|') + '"'
-        }
-        return result
-      } else {
-        return 'list'
-      }
+
+    return args.map((item) => {
+      if (item === '--save-dev') return '--dev'
+      else if (item === '--save') return ''
+      else if (item === '--no-package-lock') return '--no-lockfile'
+      else if (item === '--save-optional') return '--optional'
+      else if (item === '--save-exact') return '--exact'
+      else if (item === '--global' || item === '-g') return ''
+      return item
     })
   },
-  list(command: string) {
-    return npmToYarnTable.ls(command)
+  i(args: string[]) {
+    return npmToYarnTable.install(args)
   },
-  init(command: string) {
-    if (/^init (?!-).*$/.test(command)) {
-      return command.replace('init', 'create')
+  uninstall(args: string[]) {
+    args[0] = 'remove'
+
+    if (args.includes('--global') || args.includes('-g')) {
+      args.unshift('global')
     }
-    return command.replace(' --scope', '')
+
+    return args.map((item) => {
+      if (item === '--save-dev') return '--dev'
+      else if (item === '--save') return ''
+      else if (item === '--no-package-lock') return '--no-lockfile'
+      else if (item === '--global' || item === '-g') return ''
+      return item
+    })
+  },
+  version(args: string[]) {
+    return args.map((item) => {
+      if (['major', 'minor', 'patch'].includes(item)) return `--${item}`
+      return item
+    })
+  },
+  rebuild(args: string[]) {
+    args[0] = 'add --force'
+    return args
+  },
+  run(args: string[]) {
+    if (args[1] && !unchangedCLICommands.includes(args[1]) && !yarnCLICommands.includes(args[1])) {
+      args.splice(0, 1)
+    }
+    const index = args.findIndex((a) => a === '--')
+    if (index >= 0) {
+      args.splice(index, 1)
+    }
+    return args
+  },
+  exec(args: string[]) {
+    args[0] = 'run'
+    return npmToYarnTable.run(args)
+  },
+  ls(args: string[]) {
+    args[0] = 'list'
+
+    let ended = false
+    const packages = args.filter((item, id) => {
+      if (id > 0 && !ended) {
+        ended = item.startsWith('-')
+        return !ended
+      }
+      return false
+    })
+    if (packages.length > 0) {
+      args.splice(1, packages.length, '--pattern', '"' + packages.join('|') + '"')
+    }
+    return args
+  },
+  list(args: string[]) {
+    return npmToYarnTable.ls(args)
+  },
+  init(args: string[]) {
+    if (args[1] && !args[1].startsWith('-')) {
+      args[0] = 'create'
+    }
+    return args.filter((item) => item !== '--scope')
   },
   start: 'start',
   stop: 'stop',
@@ -111,21 +95,20 @@ const npmToYarnTable = {
 }
 
 export function npmToYarn(_m: string, command: string): string {
-  command = (command || '').trim()
-  const firstCommand = (/\w+/.exec(command) || [''])[0]
+  let args = parse((command || '').trim())
 
-  if (unchangedCLICommands.includes(firstCommand)) {
+  if (unchangedCLICommands.includes(args[0])) {
     return 'yarn ' + command
-  }
-
-  if (firstCommand in npmToYarnTable) {
-    const converter = npmToYarnTable[firstCommand as keyof typeof npmToYarnTable]
+  } else if (args[0] in npmToYarnTable) {
+    const converter = npmToYarnTable[args[0] as keyof typeof npmToYarnTable]
 
     if (typeof converter === 'function') {
-      return 'yarn ' + converter(command)
+      args = converter(args)
     } else {
-      return 'yarn ' + command.replace(firstCommand, converter)
+      args[0] = converter
     }
+
+    return 'yarn ' + args.filter(Boolean).join(' ')
   } else {
     return 'yarn ' + command + "\n# couldn't auto-convert command"
   }

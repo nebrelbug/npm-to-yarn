@@ -1,59 +1,64 @@
 import { unchangedCLICommands, yarnCLICommands } from './utils'
+import { parse } from './command'
+
+function convertAddRemoveArgs(args: string[]) {
+  return args.map((item) => {
+    switch (item) {
+      case '--no-lockfile':
+        return '--no-package-lock'
+      case '--dev':
+        return '--save-dev'
+      case '--optional':
+        return '--save-optional'
+      case '--exact':
+        return '--save-exact'
+      default:
+        return item
+    }
+  })
+}
 
 const yarnToNpmTable = {
-  add(command: string, global?: true) {
-    let dev
-    if (command === 'add --force') {
-      return 'rebuild'
+  add(args: string[]) {
+    if (args[1] === '--force') {
+      return ['rebuild']
     }
-    let ret = command
-      .replace('add', 'install')
-      .replace(/\s*--dev/, function () {
-        dev = true
-        return ''
-      })
-      .replace('--no-lockfile', '--no-package-lock')
-      .replace('--optional', '--save-optional')
-      .replace('--exact', '--save-exact')
-    if (dev) {
-      ret += ' --save-dev'
-    } else if (global) {
-      ret += ' --global'
-    } else {
-      ret += ' --save'
+    args[0] = 'install'
+    if (!args.includes('--dev')) {
+      args.push('--save')
     }
-    return ret
+    return convertAddRemoveArgs(args)
   },
-  remove(command: string, global?: true) {
-    let dev
-    let ret = command
-      .replace('remove', 'uninstall')
-      .replace(/\s*--dev/, function () {
-        dev = true
-        return ''
-      })
-      .replace('--no-lockfile', '--no-package-lock')
-      .replace('--optional', '--save-optional')
-      .replace('--exact', '--save-exact')
-    if (dev) {
-      ret += ' --save-dev'
-    } else if (global) {
-      ret += ' --global'
-    } else {
-      ret += ' --save'
+  remove(args: string[]) {
+    args[0] = 'uninstall'
+    if (!args.includes('--dev')) {
+      args.push('--save')
     }
-    return ret
+    return convertAddRemoveArgs(args)
   },
-  version(command: string) {
-    return command.replace(/--(major|minor|patch)/, '$1')
+  version(args: string[]) {
+    return args.map((item) => {
+      switch (item) {
+        case '--major':
+          return 'major'
+        case '--minor':
+          return 'minor'
+        case '--patch':
+          return 'patch'
+        default:
+          return item
+      }
+    })
   },
   install: 'install',
-  list(command: string) {
-    return command
-      .replace(/--pattern ["']([^"']+)["']/, function (_, packages: string) {
-        return packages.split('|').join(' ')
-      })
-      .replace(/^list/, 'ls')
+  list(args: string[]) {
+    args[0] = 'ls'
+    const patternIndex = args.findIndex((item) => item === '--pattern')
+    if (patternIndex && args[patternIndex + 1]) {
+      const packages = args[patternIndex + 1].replace(/["']([^"']+)["']/, '$1').split('|')
+      args.splice(patternIndex, 2, packages.join(' '))
+    }
+    return args
   },
   init: 'init',
   create: 'init',
@@ -61,13 +66,15 @@ const yarnToNpmTable = {
   start: 'start',
   stop: 'stop',
   test: 'test',
-  global(command: string) {
-    if (/^global add/.test(command)) {
-      return yarnToNpmTable.add(command.replace(/^global add/, 'add'), true)
-    } else if (/^global remove/.test(command)) {
-      return yarnToNpmTable.remove(command.replace(/^global remove/, 'remove'), true)
+  global(args: string[]) {
+    if (args[1] === 'add' || args[1] === 'remove') {
+      args.splice(0, 2, args[1] === 'add' ? 'install' : 'uninstall')
+      args.push('--global')
+      return convertAddRemoveArgs(args)
     }
-    return 'npm ' + command + "\n# couldn't auto-convert command"
+    // TODO: find better way
+    args.push("\n# couldn't auto-convert command")
+    return args
   },
 }
 
@@ -76,20 +83,21 @@ export function yarnToNPM(_m: string, command: string): string {
   if (command === '') {
     return 'npm install'
   }
+  let args = parse(command)
   const firstCommand = (/\w+/.exec(command) || [''])[0]
 
-  if (unchangedCLICommands.includes(firstCommand)) {
+  if (unchangedCLICommands.includes(args[0])) {
     return 'npm ' + command
-  }
-
-  if (firstCommand in yarnToNpmTable) {
-    const converter = yarnToNpmTable[firstCommand as keyof typeof yarnToNpmTable]
+  } else if (args[0] in yarnToNpmTable) {
+    const converter = yarnToNpmTable[args[0] as keyof typeof yarnToNpmTable]
 
     if (typeof converter === 'function') {
-      return 'npm ' + converter(command)
+      args = converter(args)
     } else {
-      return 'npm ' + command.replace(firstCommand, converter)
+      args[0] = converter
     }
+
+    return 'npm ' + args.filter(Boolean).join(' ')
   } else if (!yarnCLICommands.includes(firstCommand)) {
     // i.e., yarn grunt -> npm run grunt
     return 'npm run ' + command
