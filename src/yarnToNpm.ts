@@ -1,8 +1,8 @@
 import { unchangedCLICommands, yarnCLICommands } from './utils'
 import { parse } from './command'
 
-function convertAddRemoveArgs(args: string[]) {
-  return args.map((item) => {
+function convertAddRemoveArgs (args: string[]) {
+  return args.map(item => {
     switch (item) {
       case '--no-lockfile':
         return '--no-package-lock'
@@ -19,7 +19,7 @@ function convertAddRemoveArgs(args: string[]) {
 }
 
 const yarnToNpmTable = {
-  add(args: string[]) {
+  add (args: string[]) {
     if (args[1] === '--force') {
       return ['rebuild']
     }
@@ -29,15 +29,15 @@ const yarnToNpmTable = {
     }
     return convertAddRemoveArgs(args)
   },
-  remove(args: string[]) {
+  remove (args: string[]) {
     args[0] = 'uninstall'
     if (!args.includes('--dev')) {
       args.push('--save')
     }
     return convertAddRemoveArgs(args)
   },
-  version(args: string[]) {
-    return args.map((item) => {
+  version (args: string[]) {
+    return args.map(item => {
       switch (item) {
         case '--major':
           return 'major'
@@ -51,9 +51,9 @@ const yarnToNpmTable = {
     })
   },
   install: 'install',
-  list(args: string[]) {
+  list (args: string[]) {
     args[0] = 'ls'
-    const patternIndex = args.findIndex((item) => item === '--pattern')
+    const patternIndex = args.findIndex(item => item === '--pattern')
     if (patternIndex >= 0 && args[patternIndex + 1]) {
       const packages = args[patternIndex + 1].replace(/["']([^"']+)["']/, '$1').split('|')
       args.splice(patternIndex, 2, packages.join(' '))
@@ -66,19 +66,33 @@ const yarnToNpmTable = {
   start: 'start',
   stop: 'stop',
   test: 'test',
-  global(args: string[]) {
-    if (args[1] === 'add' || args[1] === 'remove') {
-      args.splice(0, 2, args[1] === 'add' ? 'install' : 'uninstall')
-      args.push('--global')
-      return convertAddRemoveArgs(args)
+  global (args: string[]) {
+    switch (args[1]) {
+      case 'add':
+        args.shift()
+        args = yarnToNpmTable.add(args)
+        args.push('--global')
+        return args
+      case 'remove':
+        args.shift()
+        args = yarnToNpmTable.remove(args)
+        args.push('--global')
+        return args
+      case 'list':
+        args.shift()
+        args = yarnToNpmTable.list(args)
+        args.push('--global')
+        return args
+      // case 'bin':
+      // case 'upgrade':
+      default:
+        args.push("\n# couldn't auto-convert command")
+        return args
     }
-    // TODO: find better way
-    args.push("\n# couldn't auto-convert command")
-    return args
-  },
+  }
 }
 
-export function yarnToNPM(_m: string, command: string): string {
+export function yarnToNPM (_m: string, command: string): string {
   command = (command || '').trim()
   if (command === '') {
     return 'npm install'

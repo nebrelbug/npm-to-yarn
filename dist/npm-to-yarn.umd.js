@@ -42,7 +42,7 @@
       'versions',
       'why',
       'workspace',
-      'workspaces',
+      'workspaces'
   ];
 
   function parse(command) {
@@ -145,15 +145,29 @@
       stop: 'stop',
       test: 'test',
       global: function (args) {
-          if (args[1] === 'add' || args[1] === 'remove') {
-              args.splice(0, 2, args[1] === 'add' ? 'install' : 'uninstall');
-              args.push('--global');
-              return convertAddRemoveArgs(args);
+          switch (args[1]) {
+              case 'add':
+                  args.shift();
+                  args = yarnToNpmTable.add(args);
+                  args.push('--global');
+                  return args;
+              case 'remove':
+                  args.shift();
+                  args = yarnToNpmTable.remove(args);
+                  args.push('--global');
+                  return args;
+              case 'list':
+                  args.shift();
+                  args = yarnToNpmTable.list(args);
+                  args.push('--global');
+                  return args;
+              // case 'bin':
+              // case 'upgrade':
+              default:
+                  args.push("\n# couldn't auto-convert command");
+                  return args;
           }
-          // TODO: find better way
-          args.push("\n# couldn't auto-convert command");
-          return args;
-      },
+      }
   };
   function yarnToNPM(_m, command) {
       command = (command || '').trim();
@@ -277,7 +291,7 @@
       },
       start: 'start',
       stop: 'stop',
-      test: 'test',
+      test: 'test'
   };
   function npmToYarn(_m, command) {
       var args = parse((command || '').trim());

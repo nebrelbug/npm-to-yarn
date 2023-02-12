@@ -1,4 +1,4 @@
-export function parse(command: string) {
+export function parse (command: string) {
   const args: string[] = []
   let lastQuote: string | false = false
   let escaped = false

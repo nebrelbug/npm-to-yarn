@@ -37,7 +37,7 @@ export const yarnCLICommands = [
   'versions',
   'why',
   'workspace',
-  'workspaces',
+  'workspaces'
 ]
 
 export const npmCLICommands = [
@@ -97,5 +97,5 @@ export const npmCLICommands = [
   'update',
   'version',
   'view',
-  'whoami',
+  'whoami'
 ]

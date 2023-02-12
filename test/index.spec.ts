@@ -35,6 +35,10 @@ describe('NPM to Yarn tests', () => {
     )
   })
 
+  it('Global list', () => {
+    expect(convert('npm list --global', 'yarn')).toEqual('yarn list --global')
+  })
+
   it('Unchanged command', () => {
     expect(convert('npm cache clean', 'yarn')).toEqual('yarn cache clean')
   })
@@ -196,16 +200,16 @@ describe('Yarn to NPM tests', () => {
   })
 
   it('Yarn global', () => {
-    expect(convert('yarn global add squirrelly', 'npm')).toEqual('npm install squirrelly --global')
-  })
-
-  it('Yarn global remove', () => {
+    expect(convert('yarn global add squirrelly', 'npm')).toEqual(
+      'npm install squirrelly --save --global'
+    )
     expect(convert('yarn global remove squirrelly', 'npm')).toEqual(
-      'npm uninstall squirrelly --global'
+      'npm uninstall squirrelly --save --global'
     )
     expect(convert('yarn global squirrelly', 'npm')).toEqual(
       'npm global squirrelly \n' + "# couldn't auto-convert command"
     )
+    expect(convert('yarn global list', 'npm')).toEqual('npm ls --global')
   })
 
   it('Plain `yarn`', () => {

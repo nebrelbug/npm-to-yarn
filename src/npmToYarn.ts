@@ -2,7 +2,7 @@ import { unchangedCLICommands, yarnCLICommands } from './utils'
 import { parse } from './command'
 
 const npmToYarnTable = {
-  install(args: string[]) {
+  install (args: string[]) {
     if (args.length === 1) {
       return args
     }
@@ -12,7 +12,7 @@ const npmToYarnTable = {
       args.unshift('global')
     }
 
-    return args.map((item) => {
+    return args.map(item => {
       if (item === '--save-dev' || item === '-D') return '--dev'
       else if (item === '--save' || item === '-S') return ''
       else if (item === '--no-package-lock') return '--no-lockfile'
@@ -22,18 +22,18 @@ const npmToYarnTable = {
       return item
     })
   },
-  i(args: string[]) {
+  i (args: string[]) {
     args[0] = 'install'
     return npmToYarnTable.install(args)
   },
-  uninstall(args: string[]) {
+  uninstall (args: string[]) {
     args[0] = 'remove'
 
     if (args.includes('--global') || args.includes('-g')) {
       args.unshift('global')
     }
 
-    return args.map((item) => {
+    return args.map(item => {
       if (item === '--save-dev') return '--dev'
       else if (item === '--save') return ''
       else if (item === '--no-package-lock') return '--no-lockfile'
@@ -41,27 +41,27 @@ const npmToYarnTable = {
       return item
     })
   },
-  version(args: string[]) {
-    return args.map((item) => {
+  version (args: string[]) {
+    return args.map(item => {
       if (['major', 'minor', 'patch'].includes(item)) return `--${item}`
       return item
     })
   },
-  rebuild(args: string[]) {
+  rebuild (args: string[]) {
     args[0] = 'add --force'
     return args
   },
-  run(args: string[]) {
+  run (args: string[]) {
     if (args[1] && !unchangedCLICommands.includes(args[1]) && !yarnCLICommands.includes(args[1])) {
       args.splice(0, 1)
     }
     return args
   },
-  exec(args: string[]) {
+  exec (args: string[]) {
     args[0] = 'run'
     return npmToYarnTable.run(args)
   },
-  ls(args: string[]) {
+  ls (args: string[]) {
     args[0] = 'list'
 
     let ended = false
@@ -77,24 +77,24 @@ const npmToYarnTable = {
     }
     return args
   },
-  list(args: string[]) {
+  list (args: string[]) {
     return npmToYarnTable.ls(args)
   },
-  init(args: string[]) {
+  init (args: string[]) {
     if (args[1] && !args[1].startsWith('-')) {
       args[0] = 'create'
     }
-    return args.filter((item) => item !== '--scope')
+    return args.filter(item => item !== '--scope')
   },
   start: 'start',
   stop: 'stop',
-  test: 'test',
+  test: 'test'
 }
 
-export function npmToYarn(_m: string, command: string): string {
+export function npmToYarn (_m: string, command: string): string {
   let args = parse((command || '').trim())
 
-  const index = args.findIndex((a) => a === '--')
+  const index = args.findIndex(a => a === '--')
   if (index >= 0) {
     args.splice(index, 1)
   }
