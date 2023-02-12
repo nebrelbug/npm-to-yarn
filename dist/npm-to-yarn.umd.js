@@ -85,6 +85,8 @@
           switch (item) {
               case '--no-lockfile':
                   return '--no-package-lock';
+              case '--production':
+                  return '--save-prod';
               case '--dev':
                   return '--save-dev';
               case '--optional':
@@ -98,11 +100,15 @@
   }
   var yarnToNpmTable = {
       add: function (args) {
-          if (args[1] === '--force') {
+          if (args.length === 2 && args[1] === '--force') {
               return ['rebuild'];
           }
           args[0] = 'install';
-          if (!args.includes('--dev') && !args.includes('--exact') && !args.includes('--optional')) {
+          if (!args.includes('--dev') &&
+              !args.includes('--force') &&
+              !args.includes('--exact') &&
+              !args.includes('--optional') &&
+              !args.includes('--production')) {
               args.push('--save');
           }
           return convertAddRemoveArgs(args);
@@ -198,61 +204,86 @@
       }
   }
 
+  function convertInstallArgs(args) {
+      if (args.includes('--global') || args.includes('-g')) {
+          args.unshift('global');
+      }
+      return args.map(function (item) {
+          switch (item) {
+              case '--save-dev':
+              case '-D':
+                  return '--dev';
+              case '--save-prod':
+              case '-P':
+                  return '--production';
+              case '--no-package-lock':
+                  return '--no-lockfile';
+              case '--save-optional':
+              case '-O':
+                  return '--optional';
+              case '--save-exact':
+              case '-E':
+                  return '--exact';
+              case '--save':
+              case '-S':
+              case '--global':
+              case '-g':
+                  return '';
+              default:
+                  return item;
+          }
+      });
+  }
   var npmToYarnTable = {
       install: function (args) {
           if (args.length === 1) {
-              return args;
+              return ['install'];
           }
           args[0] = 'add';
-          if (args.includes('--global') || args.includes('-g')) {
-              args.unshift('global');
-          }
-          return args.map(function (item) {
-              if (item === '--save-dev' || item === '-D')
-                  return '--dev';
-              else if (item === '--save' || item === '-S')
-                  return '';
-              else if (item === '--no-package-lock')
-                  return '--no-lockfile';
-              else if (item === '--save-optional')
-                  return '--optional';
-              else if (item === '--save-exact' || item === '-E')
-                  return '--exact';
-              else if (item === '--global' || item === '-g')
-                  return '';
-              return item;
-          });
+          return convertInstallArgs(args);
       },
       i: function (args) {
-          args[0] = 'install';
           return npmToYarnTable.install(args);
       },
       uninstall: function (args) {
           args[0] = 'remove';
-          if (args.includes('--global') || args.includes('-g')) {
-              args.unshift('global');
-          }
-          return args.map(function (item) {
-              if (item === '--save-dev')
-                  return '--dev';
-              else if (item === '--save')
-                  return '';
-              else if (item === '--no-package-lock')
-                  return '--no-lockfile';
-              else if (item === '--global' || item === '-g')
-                  return '';
-              return item;
-          });
+          return convertInstallArgs(args);
+      },
+      remove: function (args) {
+          return npmToYarnTable.uninstall(args);
+      },
+      un: function (args) {
+          return npmToYarnTable.uninstall(args);
+      },
+      unlink: function (args) {
+          return npmToYarnTable.uninstall(args);
+      },
+      r: function (args) {
+          return npmToYarnTable.uninstall(args);
+      },
+      rm: function (args) {
+          return npmToYarnTable.uninstall(args);
       },
       version: function (args) {
           return args.map(function (item) {
-              if (['major', 'minor', 'patch'].includes(item))
-                  return "--".concat(item);
-              return item;
+              switch (item) {
+                  case 'major':
+                      return '--major';
+                  case 'minor':
+                      return '--minor';
+                  case 'patch':
+                      return '--patch';
+                  default:
+                      return item;
+              }
           });
       },
+      rb: function (args) {
+          return npmToYarnTable.rebuild(args);
+      },
       rebuild: function (args) {
-          args[0] = 'add --force';
+          args[0] = 'add';
+          args.push('--force');
           return args;
       },
       run: function (args) {

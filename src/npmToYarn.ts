@@ -1,54 +1,90 @@
 import { unchangedCLICommands, yarnCLICommands } from './utils'
 import { parse } from './command'
 
+function convertInstallArgs (args: string[]) {
+  if (args.includes('--global') || args.includes('-g')) {
+    args.unshift('global')
+  }
+
+  return args.map(item => {
+    switch (item) {
+      case '--save-dev':
+      case '-D':
+        return '--dev'
+      case '--save-prod':
+      case '-P':
+        return '--production'
+      case '--no-package-lock':
+        return '--no-lockfile'
+      case '--save-optional':
+      case '-O':
+        return '--optional'
+      case '--save-exact':
+      case '-E':
+        return '--exact'
+      case '--save':
+      case '-S':
+      case '--global':
+      case '-g':
+        return ''
+      default:
+        return item
+    }
+  })
+}
+
 const npmToYarnTable = {
   install (args: string[]) {
     if (args.length === 1) {
-      return args
+      return ['install']
     }
     args[0] = 'add'
 
-    if (args.includes('--global') || args.includes('-g')) {
-      args.unshift('global')
-    }
-
-    return args.map(item => {
-      if (item === '--save-dev' || item === '-D') return '--dev'
-      else if (item === '--save' || item === '-S') return ''
-      else if (item === '--no-package-lock') return '--no-lockfile'
-      else if (item === '--save-optional') return '--optional'
-      else if (item === '--save-exact' || item === '-E') return '--exact'
-      else if (item === '--global' || item === '-g') return ''
-      return item
-    })
+    return convertInstallArgs(args)
   },
   i (args: string[]) {
-    args[0] = 'install'
     return npmToYarnTable.install(args)
   },
   uninstall (args: string[]) {
     args[0] = 'remove'
 
-    if (args.includes('--global') || args.includes('-g')) {
-      args.unshift('global')
-    }
-
-    return args.map(item => {
-      if (item === '--save-dev') return '--dev'
-      else if (item === '--save') return ''
-      else if (item === '--no-package-lock') return '--no-lockfile'
-      else if (item === '--global' || item === '-g') return ''
-      return item
-    })
+    return convertInstallArgs(args)
+  },
+  remove (args: string[]) {
+    return npmToYarnTable.uninstall(args)
+  },
+  un (args: string[]) {
+    return npmToYarnTable.uninstall(args)
+  },
+  unlink (args: string[]) {
+    return npmToYarnTable.uninstall(args)
+  },
+  r (args: string[]) {
+    return npmToYarnTable.uninstall(args)
+  },
+  rm (args: string[]) {
+    return npmToYarnTable.uninstall(args)
   },
   version (args: string[]) {
     return args.map(item => {
-      if (['major', 'minor', 'patch'].includes(item)) return `--${item}`
-      return item
+      switch (item) {
+        case 'major':
+          return '--major'
+        case 'minor':
+          return '--minor'
+        case 'patch':
+          return '--patch'
+        default:
+          return item
+      }
     })
   },
+  rb (args: string[]) {
+    return npmToYarnTable.rebuild(args)
+  },
   rebuild (args: string[]) {
-    args[0] = 'add --force'
+    args[0] = 'add'
+    args.push('--force')
     return args
   },
   run (args: string[]) {

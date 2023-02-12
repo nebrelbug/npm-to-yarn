@@ -70,8 +70,11 @@ describe('NPM to Yarn tests', () => {
   })
   it('npm install --save-optional', () => {
     expect(convert('npm install --save-optional', 'yarn')).toEqual('yarn add --optional')
+    expect(convert('npm i -O', 'yarn')).toEqual('yarn add --optional')
     expect(convert('npm i --save-optional', 'yarn')).toEqual('yarn add --optional')
     expect(convert('npm i --save-optional test', 'yarn')).toEqual('yarn add --optional test')
+    expect(convert('npm i -O', 'yarn')).toEqual('yarn add --optional')
+    expect(convert('npm i -O test', 'yarn')).toEqual('yarn add --optional test')
   })
   it('npm install --save-dev', () => {
     expect(convert('npm install --save-dev', 'yarn')).toEqual('yarn add --dev')
@@ -79,9 +82,16 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm i --save-dev', 'yarn')).toEqual('yarn add --dev')
     expect(convert('npm i -D', 'yarn')).toEqual('yarn add --dev')
   })
+  it('npm install --save-prod', () => {
+    expect(convert('npm install --save-prod', 'yarn')).toEqual('yarn add --production')
+    expect(convert('npm i --save-prod', 'yarn')).toEqual('yarn add --production')
+  })
 
   it('npm rebuild', () => {
     expect(convert('npm rebuild', 'yarn')).toEqual('yarn add --force')
+    expect(convert('npm rb', 'yarn')).toEqual('yarn add --force')
+    expect(convert('npm rebuild package', 'yarn')).toEqual('yarn add package --force')
+    expect(convert('npm rb package', 'yarn')).toEqual('yarn add package --force')
   })
 
   it("npm whoami can't auto-convert to yarn", () => {
@@ -175,6 +185,7 @@ describe('Yarn to NPM tests', () => {
     expect(convert('yarn add squirrelly --exact', 'npm')).toEqual(
       'npm install squirrelly --save-exact'
     )
+    expect(convert('yarn add test --production', 'npm')).toEqual('npm install test --save-prod')
   })
 
   it('Convert with dev works', () => {
@@ -218,6 +229,7 @@ describe('Yarn to NPM tests', () => {
 
   it('yarn add --force', () => {
     expect(convert('yarn add --force', 'npm')).toEqual('npm rebuild')
+    expect(convert('yarn add package --force', 'npm')).toEqual('npm install package --force')
   })
 
   it('Version works', () => {

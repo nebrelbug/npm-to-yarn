@@ -6,6 +6,8 @@ function convertAddRemoveArgs (args: string[]) {
     switch (item) {
       case '--no-lockfile':
         return '--no-package-lock'
+      case '--production':
+        return '--save-prod'
       case '--dev':
         return '--save-dev'
       case '--optional':
@@ -20,11 +22,17 @@ function convertAddRemoveArgs (args: string[]) {
 
 const yarnToNpmTable = {
   add (args: string[]) {
-    if (args[1] === '--force') {
-      return ['rebuild']
+    if (args.length === 2 && args[1] === '--force') {
+      return ['rebuild'];
     }
     args[0] = 'install'
-    if (!args.includes('--dev') && !args.includes('--exact') && !args.includes('--optional')) {
+    if (
+      !args.includes('--dev') &&
+      !args.includes('--force') &&
+      !args.includes('--exact') &&
+      !args.includes('--optional') &&
+      !args.includes('--production')
+    ) {
       args.push('--save')
     }
     return convertAddRemoveArgs(args)
