@@ -1,4 +1,15 @@
-export const unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache']
+export const unchangedCLICommands = [
+  'test',
+  'login',
+  'logout',
+  'link',
+  'unlink',
+  'publish',
+  'cache',
+  'start',
+  'stop',
+  'test'
+]
 
 export const yarnCLICommands = [
   'init',
@@ -29,8 +40,6 @@ export const yarnCLICommands = [
   'self-update',
   'tag',
   'team',
-  'link',
-  'unlink',
   'upgrade',
   'upgrade-interactive',
   'version',

@@ -53,12 +53,6 @@ const npmToYarnTable = {
   remove (args: string[]) {
     return npmToYarnTable.uninstall(args)
   },
-  un (args: string[]) {
-    return npmToYarnTable.uninstall(args)
-  },
-  unlink (args: string[]) {
-    return npmToYarnTable.uninstall(args)
-  },
   r (args: string[]) {
     return npmToYarnTable.uninstall(args)
   },
@@ -122,9 +116,8 @@ const npmToYarnTable = {
     }
     return args.filter(item => item !== '--scope')
   },
-  start: 'start',
-  stop: 'stop',
-  test: 'test'
+  ln: 'link',
+  un: 'unlink'
 }
 
 export function npmToYarn (_m: string, command: string): string {
@@ -136,7 +129,7 @@ export function npmToYarn (_m: string, command: string): string {
   }
 
   if (unchangedCLICommands.includes(args[0])) {
-    return 'yarn ' + args.join(' ')
+    return 'yarn ' + args.filter(Boolean).join(' ')
   } else if (args[0] in npmToYarnTable) {
     const converter = npmToYarnTable[args[0] as keyof typeof npmToYarnTable]
 

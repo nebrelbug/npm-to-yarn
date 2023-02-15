@@ -23,7 +23,7 @@ function convertAddRemoveArgs (args: string[]) {
 const yarnToNpmTable = {
   add (args: string[]) {
     if (args.length === 2 && args[1] === '--force') {
-      return ['rebuild'];
+      return ['rebuild']
     }
     args[0] = 'install'
     if (
@@ -71,9 +71,6 @@ const yarnToNpmTable = {
   init: 'init',
   create: 'init',
   run: 'run',
-  start: 'start',
-  stop: 'stop',
-  test: 'test',
   global (args: string[]) {
     switch (args[1]) {
       case 'add':

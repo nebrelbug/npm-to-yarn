@@ -19,6 +19,8 @@ describe('NPM to Yarn tests', () => {
   })
 
   it('Simple convert works w/ remove', () => {
+    expect(convert('npm r squirrelly', 'yarn')).toEqual('yarn remove squirrelly')
+    expect(convert('npm remove squirrelly', 'yarn')).toEqual('yarn remove squirrelly')
     expect(convert('npm uninstall squirrelly', 'yarn')).toEqual('yarn remove squirrelly')
   })
 
@@ -171,6 +173,13 @@ describe('NPM to Yarn tests', () => {
     expect(convert('npm ls --production', 'yarn')).toEqual('yarn list --production')
     expect(convert('npm ls --development', 'yarn')).toEqual('yarn list --development')
   })
+
+  it('npm link/unlink', () => {
+    expect(convert('npm ln custom', 'yarn')).toEqual('yarn link custom')
+    expect(convert('npm link custom', 'yarn')).toEqual('yarn link custom')
+    expect(convert('npm unlink custom', 'yarn')).toEqual('yarn unlink custom')
+    expect(convert('npm un custom', 'yarn')).toEqual('yarn unlink custom')
+  })
 })
 
 describe('Yarn to NPM tests', () => {
@@ -294,5 +303,10 @@ describe('Yarn to NPM tests', () => {
     )
     expect(convert('yarn list --production', 'npm')).toEqual('npm ls --production')
     expect(convert('yarn list --development', 'npm')).toEqual('npm ls --development')
+  })
+
+  it('npm link/unlink', () => {
+    expect(convert('yarn link custom', 'npm')).toEqual('npm link custom')
+    expect(convert('yarn unlink custom', 'npm')).toEqual('npm unlink custom')
   })
 })

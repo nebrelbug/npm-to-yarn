@@ -1,4 +1,15 @@
-var unchangedCLICommands = ['test', 'login', 'logout', 'link', 'publish', 'cache'];
+var unchangedCLICommands = [
+    'test',
+    'login',
+    'logout',
+    'link',
+    'unlink',
+    'publish',
+    'cache',
+    'start',
+    'stop',
+    'test'
+];
 var yarnCLICommands = [
     'init',
     'run',
@@ -28,8 +39,6 @@ var yarnCLICommands = [
     'self-update',
     'tag',
     'team',
-    'link',
-    'unlink',
     'upgrade',
     'upgrade-interactive',
     'version',
@@ -141,9 +150,6 @@ var yarnToNpmTable = {
     init: 'init',
     create: 'init',
     run: 'run',
-    start: 'start',
-    stop: 'stop',
-    test: 'test',
     global: function (args) {
         switch (args[1]) {
             case 'add':
@@ -246,12 +252,6 @@ var npmToYarnTable = {
     remove: function (args) {
         return npmToYarnTable.uninstall(args);
     },
-    un: function (args) {
-        return npmToYarnTable.uninstall(args);
-    },
-    unlink: function (args) {
-        return npmToYarnTable.uninstall(args);
-    },
     r: function (args) {
         return npmToYarnTable.uninstall(args);
     },
@@ -314,9 +314,8 @@ var npmToYarnTable = {
         }
         return args.filter(function (item) { return item !== '--scope'; });
     },
-    start: 'start',
-    stop: 'stop',
-    test: 'test'
+    ln: 'link',
+    un: 'unlink'
 };
 function npmToYarn(_m, command) {
     var args = parse((command || '').trim());
