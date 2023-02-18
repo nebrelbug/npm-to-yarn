@@ -50,6 +50,9 @@ const npmToYarnTable = {
 
     return convertInstallArgs(args)
   },
+  un (args: string[]) {
+    return npmToYarnTable.uninstall(args)
+  },
   remove (args: string[]) {
     return npmToYarnTable.uninstall(args)
   },
@@ -117,7 +120,8 @@ const npmToYarnTable = {
     return args.filter(item => item !== '--scope')
   },
   ln: 'link',
-  un: 'unlink'
+  t: 'test',
+  tst: 'test'
 }
 
 export function npmToYarn (_m: string, command: string): string {
@@ -141,6 +145,6 @@ export function npmToYarn (_m: string, command: string): string {
 
     return 'yarn ' + args.filter(Boolean).join(' ')
   } else {
-    return 'yarn ' + command + "\n# couldn't auto-convert command"
+    return 'npm ' + command + "\n# couldn't auto-convert command"
   }
 }

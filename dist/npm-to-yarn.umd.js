@@ -255,6 +255,9 @@
           args[0] = 'remove';
           return convertInstallArgs(args);
       },
+      un: function (args) {
+          return npmToYarnTable.uninstall(args);
+      },
       remove: function (args) {
           return npmToYarnTable.uninstall(args);
       },
@@ -321,7 +324,8 @@
           return args.filter(function (item) { return item !== '--scope'; });
       },
       ln: 'link',
-      un: 'unlink'
+      t: 'test',
+      tst: 'test'
   };
   function npmToYarn(_m, command) {
       var args = parse((command || '').trim());
@@ -343,7 +347,130 @@
           return 'yarn ' + args.filter(Boolean).join(' ');
       }
       else {
-          return 'yarn ' + command + "\n# couldn't auto-convert command";
+          return 'npm ' + command + "\n# couldn't auto-convert command";
+      }
+  }
+
+  function convertPnpmInstallArgs(args) {
+      return args.map(function (item) {
+          switch (item) {
+              case '--save':
+              case '-S':
+                  return '';
+              case '--no-package-lock':
+                  return '--frozen-lockfile';
+              // case '--save-dev':
+              // case '-D':
+              // case '--save-prod':
+              // case '-P':
+              // case '--save-optional':
+              // case '-O':
+              // case '--save-exact':
+              // case '-E':
+              // case '--global':
+              // case '-g':
+              default:
+                  return item;
+          }
+      });
+  }
+  function convertFilterArg(args) {
+      if (args.length > 1) {
+          var filter = args.filter(function (item, index) { return index !== 0 && !item.startsWith('-'); });
+          if (filter.length > 0) {
+              args = args.filter(function (item, index) { return index === 0 || item.startsWith('-'); });
+              args.push('--filter');
+              args.push(filter.join(' '));
+          }
+      }
+      return args;
+  }
+  var npmToPnpmTable = {
+      // ------------------------------
+      install: function (args) {
+          if (args.length > 1 && args.filter(function (item) { return !item.startsWith('-'); }).length > 1) {
+              args[0] = 'add';
+          }
+          return convertPnpmInstallArgs(args);
+      },
+      i: function (args) {
+          return npmToPnpmTable.install(args);
+      },
+      // ------------------------------
+      uninstall: function (args) {
+          args[0] = 'remove';
+          return convertPnpmInstallArgs(args);
+      },
+      un: function (args) {
+          return npmToPnpmTable.uninstall(args);
+      },
+      remove: function (args) {
+          return npmToPnpmTable.uninstall(args);
+      },
+      r: function (args) {
+          return npmToPnpmTable.uninstall(args);
+      },
+      rm: function (args) {
+          return npmToPnpmTable.uninstall(args);
+      },
+      // ------------------------------
+      rb: function (args) {
+          return npmToPnpmTable.rebuild(args);
+      },
+      rebuild: function (args) {
+          args[0] = 'rebuild';
+          return convertFilterArg(args);
+      },
+      run: 'run',
+      exec: 'exec',
+      ls: function (args) {
+          return npmToPnpmTable.list(args);
+      },
+      list: function (args) {
+          return args.map(function (item) {
+              if (item.startsWith('--depth=')) {
+                  return "--depth ".concat(item.split('=')[1]);
+              }
+              switch (item) {
+                  case '--production':
+                      return '--prod';
+                  case '--development':
+                      return '--dev';
+                  default:
+                      return item;
+              }
+          });
+      },
+      init: function (args) {
+          if (args[1] && !args[1].startsWith('-')) {
+              args[0] = 'create';
+          }
+          return args.filter(function (item) { return item !== '--scope'; });
+      },
+      ln: 'link',
+      t: 'test',
+      test: 'test',
+      tst: 'test',
+      start: 'start',
+      link: 'link',
+      unlink: function (args) {
+          return convertFilterArg(args);
+      }
+  };
+  function npmToPnpm(_m, command) {
+      var args = parse((command || '').trim());
+      if (args[0] in npmToPnpmTable) {
+          var converter = npmToPnpmTable[args[0]];
+          if (typeof converter === 'function') {
+              args = converter(args);
+          }
+          else {
+              args[0] = converter;
+          }
+          return 'pnpm ' + args.filter(Boolean).join(' ');
+      }
+      else {
+          return 'npm ' + command + "\n# couldn't auto-convert command";
       }
   }
 
@@ -353,6 +480,9 @@
   function convert(str, to) {
       if (to === 'npm') {
           return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
+      }
+      else if (to === 'pnpm') {
+          return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
       }
       else {
           return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
