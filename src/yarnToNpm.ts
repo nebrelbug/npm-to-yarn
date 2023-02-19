@@ -26,22 +26,10 @@ const yarnToNpmTable = {
       return ['rebuild']
     }
     args[0] = 'install'
-    if (
-      !args.includes('--dev') &&
-      !args.includes('--force') &&
-      !args.includes('--exact') &&
-      !args.includes('--optional') &&
-      !args.includes('--production')
-    ) {
-      args.push('--save')
-    }
     return convertAddRemoveArgs(args)
   },
   remove (args: string[]) {
     args[0] = 'uninstall'
-    if (!args.includes('--dev')) {
-      args.push('--save')
-    }
     return convertAddRemoveArgs(args)
   },
   version (args: string[]) {
@@ -70,6 +58,7 @@ const yarnToNpmTable = {
   },
   init: 'init',
   create: 'init',
+  outdated: 'outdated',
   run: 'run',
   global (args: string[]) {
     switch (args[1]) {
@@ -94,6 +83,14 @@ const yarnToNpmTable = {
         args.push("\n# couldn't auto-convert command")
         return args
     }
+  },
+  pack (args: string[]) {
+    return args.map(item => {
+      if (item === '--filename') {
+        return '--pack-destination'
+      }
+      return item
+    })
   }
 }
 

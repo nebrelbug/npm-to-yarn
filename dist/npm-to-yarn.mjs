@@ -107,20 +107,10 @@ var yarnToNpmTable = {
             return ['rebuild'];
         }
         args[0] = 'install';
-        if (!args.includes('--dev') &&
-            !args.includes('--force') &&
-            !args.includes('--exact') &&
-            !args.includes('--optional') &&
-            !args.includes('--production')) {
-            args.push('--save');
-        }
         return convertAddRemoveArgs(args);
     },
     remove: function (args) {
         args[0] = 'uninstall';
-        if (!args.includes('--dev')) {
-            args.push('--save');
-        }
         return convertAddRemoveArgs(args);
     },
     version: function (args) {
@@ -149,6 +139,7 @@ var yarnToNpmTable = {
     },
     init: 'init',
     create: 'init',
+    outdated: 'outdated',
     run: 'run',
     global: function (args) {
         switch (args[1]) {
@@ -173,6 +164,14 @@ var yarnToNpmTable = {
                 args.push("\n# couldn't auto-convert command");
                 return args;
         }
+    },
+    pack: function (args) {
+        return args.map(function (item) {
+            if (item === '--filename') {
+                return '--pack-destination';
+            }
+            return item;
+        });
     }
 };
 function yarnToNPM(_m, command) {

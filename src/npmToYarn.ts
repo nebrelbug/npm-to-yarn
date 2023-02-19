@@ -123,7 +123,7 @@ const npmToYarnTable = {
   t: 'test',
   tst: 'test',
   outdated: 'outdated',
-  pack: (args: string[]) => {
+  pack (args: string[]) {
     return args.map(item => {
       if (item.startsWith('--pack-destination')) {
         return item.replace(/^--pack-destination[\s=]/, '--filename ')

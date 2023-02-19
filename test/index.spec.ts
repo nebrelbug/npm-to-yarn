@@ -202,130 +202,92 @@ describe('NPM tests', () => {
 })
 
 describe('Yarn to NPM tests', () => {
-  it('Simple convert works', () => {
-    expect(convert('yarn add squirrelly', 'npm')).toEqual('npm install squirrelly --save')
-    expect(convert('yarn add squirrelly --no-lockfile', 'npm')).toEqual(
-      'npm install squirrelly --no-package-lock --save'
-    )
-    expect(convert('yarn add squirrelly --optional', 'npm')).toEqual(
-      'npm install squirrelly --save-optional'
-    )
-    expect(convert('yarn add squirrelly --exact', 'npm')).toEqual(
-      'npm install squirrelly --save-exact'
-    )
-    expect(convert('yarn add test --production', 'npm')).toEqual('npm install test --save-prod')
-  })
-
-  it('Convert with dev works', () => {
-    expect(convert('yarn add squirrelly --dev', 'npm')).toEqual('npm install squirrelly --save-dev')
-  })
-
-  it('Convert with remove works', () => {
-    expect(convert('yarn remove squirrelly --dev', 'npm')).toEqual(
-      'npm uninstall squirrelly --save-dev'
-    )
-  })
-
-  it('Convert with cache clean works', () => {
-    expect(convert('yarn cache clean', 'npm')).toEqual('npm cache clean')
-  })
-
-  it('Yarn implied run', () => {
-    expect(convert('yarn grunt', 'npm')).toEqual('npm run grunt')
-  })
-
-  it('Plain yarn install', () => {
-    expect(convert('yarn install', 'npm')).toEqual('npm install')
-  })
-
-  it('Yarn global', () => {
-    expect(convert('yarn global add squirrelly', 'npm')).toEqual(
-      'npm install squirrelly --save --global'
-    )
-    expect(convert('yarn global remove squirrelly', 'npm')).toEqual(
-      'npm uninstall squirrelly --save --global'
-    )
-    expect(convert('yarn global squirrelly', 'npm')).toEqual(
-      'npm global squirrelly \n' + "# couldn't auto-convert command"
-    )
-    expect(convert('yarn global list', 'npm')).toEqual('npm ls --global')
-  })
-
-  it('Plain `yarn`', () => {
-    expect(convert('yarn', 'npm')).toEqual('npm install')
-  })
-
-  it('yarn add --force', () => {
-    expect(convert('yarn add --force', 'npm')).toEqual('npm rebuild')
-    expect(convert('yarn add package --force', 'npm')).toEqual('npm install package --force')
-  })
-
-  it('Version works', () => {
-    expect(convert('yarn version', 'npm')).toEqual('npm version')
-    expect(convert('yarn version --major', 'npm')).toEqual('npm version major')
-    expect(convert('yarn version --minor', 'npm')).toEqual('npm version minor')
-    expect(convert('yarn version --patch', 'npm')).toEqual('npm version patch')
-  })
-
-  it('Yarn remove', () => {
-    expect(convert('yarn remove squirrelly', 'npm')).toEqual('npm uninstall squirrelly --save')
-  })
-
-  it("Yarn upgrade-interactive can't auto-convert", () => {
-    expect(convert('yarn upgrade-interactive', 'npm')).toEqual(
-      "npm upgrade-interactive\n# couldn't auto-convert command"
-    )
-  })
-
-  it('yarn init', () => {
-    expect(convert('yarn init', 'npm')).toEqual('npm init')
-    expect(convert('yarn init -y', 'npm')).toEqual('npm init -y')
-    expect(convert('yarn init --yes', 'npm')).toEqual('npm init --yes')
-    expect(convert('yarn init --private', 'npm')).toEqual('npm init --private')
-    expect(convert('yarn init --unknown-arg', 'npm')).toEqual('npm init --unknown-arg')
-  })
-
-  it('yarn create', () => {
-    expect(convert('yarn create esm --yes', 'npm')).toEqual('npm init esm --yes')
-    expect(convert('yarn create @scope/my-package', 'npm')).toEqual('npm init @scope/my-package')
-    expect(convert('yarn create react-app ./my-react-app', 'npm')).toEqual(
-      'npm init react-app ./my-react-app'
-    )
-  })
-
-  it('npm custom', () => {
-    expect(convert('yarn start', 'npm')).toEqual('npm start')
-    expect(convert('yarn stop', 'npm')).toEqual('npm stop')
-    expect(convert('yarn test', 'npm')).toEqual('npm test')
-  })
-
-  it('yarn run', () => {
-    expect(convert('yarn custom', 'npm')).toEqual('npm run custom')
-    expect(convert('yarn run custom', 'npm')).toEqual('npm run custom')
-    expect(convert('yarn run add', 'npm')).toEqual('npm run add')
-    expect(convert('yarn run install', 'npm')).toEqual('npm run install')
-    expect(convert('yarn run run', 'npm')).toEqual('npm run run')
-    // with args
-    expect(convert('yarn custom -- --version', 'npm')).toEqual('npm run custom -- --version')
-    expect(convert('yarn run custom --version', 'npm')).toEqual('npm run custom --version')
-    expect(convert('yarn run custom -- --version', 'npm')).toEqual('npm run custom -- --version')
-  })
-
-  it('yarn list', () => {
-    expect(convert('yarn list', 'npm')).toEqual('npm ls')
-    expect(convert('yarn list --pattern "package"', 'npm')).toEqual('npm ls package')
-    expect(convert('yarn list --pattern "package|package2"', 'npm')).toEqual(
-      'npm ls package package2'
-    )
-    expect(convert('yarn list --pattern "@scope/package|@scope/package2"', 'npm')).toEqual(
+  const tests = [
+    // install
+    ['yarn', 'npm install'],
+    ['yarn install', 'npm install'],
+    // add
+    ['yarn add squirrelly', 'npm install squirrelly'],
+    ['yarn add squirrelly --no-lockfile', 'npm install squirrelly --no-package-lock'],
+    ['yarn add squirrelly --optional', 'npm install squirrelly --save-optional'],
+    ['yarn add squirrelly --exact', 'npm install squirrelly --save-exact'],
+    ['yarn add squirrelly --production', 'npm install squirrelly --save-prod'],
+    ['yarn add squirrelly --dev', 'npm install squirrelly --save-dev'],
+    ['yarn add --force', 'npm rebuild'],
+    ['yarn add package --force', 'npm install package --force'],
+    // remove
+    ['yarn remove squirrelly', 'npm uninstall squirrelly'],
+    ['yarn remove squirrelly --dev', 'npm uninstall squirrelly --save-dev'],
+    // cache
+    ['yarn cache clean', 'npm cache clean'],
+    // implied run
+    ['yarn grunt', 'npm run grunt'],
+    // global
+    ['yarn global add squirrelly', 'npm install squirrelly --global'],
+    ['yarn global remove squirrelly', 'npm uninstall squirrelly --global'],
+    ['yarn global squirrelly', "npm global squirrelly \n# couldn't auto-convert command"],
+    ['yarn global list', 'npm ls --global'],
+    // version
+    ['yarn version', 'npm version'],
+    ['yarn version --major', 'npm version major'],
+    ['yarn version --minor', 'npm version minor'],
+    ['yarn version --patch', 'npm version patch'],
+    // init
+    ['yarn init', 'npm init'],
+    ['yarn init -y', 'npm init -y'],
+    ['yarn init --yes', 'npm init --yes'],
+    ['yarn init --private', 'npm init --private'],
+    ['yarn init --unknown-arg', 'npm init --unknown-arg'],
+    // create
+    ['yarn create esm --yes', 'npm init esm --yes'],
+    ['yarn create @scope/my-package', 'npm init @scope/my-package'],
+    ['yarn create react-app ./my-react-app', 'npm init react-app ./my-react-app'],
+    // unchanged
+    ['yarn start', 'npm start'],
+    ['yarn stop', 'npm stop'],
+    ['yarn test', 'npm test'],
+    // run
+    ['yarn run', 'npm run'],
+    ['yarn custom', 'npm run custom'],
+    ['yarn run custom', 'npm run custom'],
+    ['yarn run add', 'npm run add'],
+    ['yarn run install', 'npm run install'],
+    ['yarn run run', 'npm run run'],
+    ['yarn run --silent', 'npm run --silent'],
+    ['yarn custom -- --version', 'npm run custom -- --version'],
+    ['yarn run custom -- --version', 'npm run custom -- --version'],
+    ['yarn run custom --version', 'npm run custom --version'],
+    // list
+    ['yarn list', 'npm ls'],
+    ['yarn list --pattern "package"', 'npm ls package'],
+    ['yarn list --pattern "package|package2"', 'npm ls package package2'],
+    [
+      'yarn list --pattern "@scope/package|@scope/package2"',
       'npm ls @scope/package @scope/package2'
-    )
-    expect(convert('yarn list --production', 'npm')).toEqual('npm ls --production')
-    expect(convert('yarn list --development', 'npm')).toEqual('npm ls --development')
-  })
+    ],
+    ['yarn list --depth 2', 'npm ls --depth 2'],
+    ['yarn list --json', 'npm ls --json'],
+    ['yarn list --production', 'npm ls --production'],
+    ['yarn list --development', 'npm ls --development'],
+    // link/unlink
+    ['yarn link', 'npm link'],
+    ['yarn link custom', 'npm link custom'],
+    ['yarn unlink', 'npm unlink'],
+    ['yarn unlink custom', 'npm unlink custom'],
+    // outdated
+    ['yarn outdated', 'npm outdated'],
+    ['yarn outdated --json', 'npm outdated --json'],
+    ['yarn outdated --long', 'npm outdated --long'],
+    ['yarn outdated lodash', 'npm outdated lodash'],
+    // pack
+    ['yarn pack', 'npm pack'],
+    ['yarn pack --filename foobar', 'npm pack --pack-destination foobar'],
+    // unsupported
+    ['yarn why', "npm why\n# couldn't auto-convert command"],
+    ['yarn upgrade-interactive', "npm upgrade-interactive\n# couldn't auto-convert command"]
+  ]
 
-  it('npm link/unlink', () => {
-    expect(convert('yarn link custom', 'npm')).toEqual('npm link custom')
-    expect(convert('yarn unlink custom', 'npm')).toEqual('npm unlink custom')
+  it.each(tests)('%s', (yarnValue, npmValue) => {
+    expect(convert(yarnValue, 'npm')).toEqual(npmValue)
   })
 })
