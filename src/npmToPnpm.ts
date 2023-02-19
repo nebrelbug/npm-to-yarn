@@ -108,6 +108,15 @@ const npmToPnpmTable = {
   link: 'link',
   unlink (args: string[]) {
     return convertFilterArg(args)
+  },
+  outdated: 'outdated',
+  pack: (args: string[]) => {
+    return args.map(item => {
+      if (item.startsWith('--pack-destination')) {
+        return item.replace(/^--pack-destination[\s=]/, '--pack-destination ')
+      }
+      return item
+    })
   }
 }
 

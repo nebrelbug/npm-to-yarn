@@ -156,6 +156,16 @@ describe('NPM tests', () => {
       'yarn list --pattern "@scope/package|@scope/package2" --depth=2',
       'pnpm list @scope/package @scope/package2 --depth 2'
     ],
+    [
+      'npm list @scope/package @scope/package2 --depth 2',
+      'yarn list --pattern "@scope/package|@scope/package2" --depth 2',
+      'pnpm list @scope/package @scope/package2 --depth 2'
+    ],
+    [
+      'npm list @scope/package --json',
+      'yarn list --pattern "@scope/package" --json',
+      'pnpm list @scope/package --json'
+    ],
     // link
     ['npm ln', 'yarn link', 'pnpm link'],
     ['npm ln package', 'yarn link package', 'pnpm link package'],
@@ -163,7 +173,19 @@ describe('NPM tests', () => {
     ['npm link package', 'yarn link package', 'pnpm link package'],
     // unlink
     ['npm unlink', 'yarn unlink', 'pnpm unlink'],
-    ['npm unlink package', 'yarn unlink package', 'pnpm unlink --filter package']
+    ['npm unlink package', 'yarn unlink package', 'pnpm unlink --filter package'],
+    // outdated
+    ['npm outdated', 'yarn outdated', 'pnpm outdated'],
+    ['npm outdated --json', 'yarn outdated --json', 'pnpm outdated --json'],
+    ['npm outdated --long', 'yarn outdated --long', 'pnpm outdated --long'],
+    ['npm outdated lodash', 'yarn outdated lodash', 'pnpm outdated lodash'],
+    // pack
+    ['npm pack', 'yarn pack', 'pnpm pack'],
+    [
+      'npm pack --pack-destination=foobar',
+      'yarn pack --filename foobar',
+      'pnpm pack --pack-destination foobar'
+    ]
   ]
 
   describe('to Yarn', () => {

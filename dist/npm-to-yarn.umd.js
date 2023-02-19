@@ -325,7 +325,16 @@
       },
       ln: 'link',
       t: 'test',
-      tst: 'test'
+      tst: 'test',
+      outdated: 'outdated',
+      pack: function (args) {
+          return args.map(function (item) {
+              if (item.startsWith('--pack-destination')) {
+                  return item.replace(/^--pack-destination[\s=]/, '--filename ');
+              }
+              return item;
+          });
+      }
   };
   function npmToYarn(_m, command) {
       var args = parse((command || '').trim());
@@ -455,6 +464,15 @@
       link: 'link',
       unlink: function (args) {
           return convertFilterArg(args);
+      },
+      outdated: 'outdated',
+      pack: function (args) {
+          return args.map(function (item) {
+              if (item.startsWith('--pack-destination')) {
+                  return item.replace(/^--pack-destination[\s=]/, '--pack-destination ');
+              }
+              return item;
+          });
       }
   };
   function npmToPnpm(_m, command) {
