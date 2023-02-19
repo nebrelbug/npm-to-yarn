@@ -44,7 +44,7 @@ convert('npm install squirrelly', 'yarn')
 /**
  * Converts between npm and yarn command
  */
-export default function convert(str: string, to: 'npm' | 'yarn'): string;
+export default function convert(str: string, to: 'npm' | 'yarn' | 'pnpm'): string;
 ```
 
 ## ✔️ Tests
