@@ -162,6 +162,10 @@ npm install squirrelly --save-dev
         <h4>Yarn</h4>
         <textarea autocomplete="off" id="yarn-text"> </textarea>
       </div>
+      <div class="resultgroup">
+        <h4>PNPM</h4>
+        <textarea readonly autocomplete="off" id="pnpm-text"> </textarea>
+      </div>
     </div>
     <script>
       /* global Sqrl */
@@ -170,12 +174,15 @@ npm install squirrelly --save-dev
           console.clear()
           var npmText = document.getElementById('npm-text').value
           document.getElementById('yarn-text').value = n2y(npmText, 'yarn')
+          document.getElementById('pnpm-text').value = n2y(npmText, 'pnpm')
         }
 
         function yarnToNpm() {
           console.clear()
           var yarnText = document.getElementById('yarn-text').value
-          document.getElementById('npm-text').value = n2y(yarnText, 'npm')
+          var npmText = n2y(yarnText, 'npm')
+          document.getElementById('npm-text').value = npmText
+          document.getElementById('pnpm-text').value = n2y(npmText, 'pnpm')
         }
 
         npmToYarn()
