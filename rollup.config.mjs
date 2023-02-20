@@ -8,20 +8,20 @@ export default [
         file: 'dist/npm-to-yarn.mjs',
         format: 'es',
         name: 'n2y',
-        sourcemap: true,
+        sourcemap: true
       },
       {
         file: 'dist/npm-to-yarn.umd.js',
         format: 'umd',
         name: 'n2y',
-        sourcemap: true,
-      },
+        sourcemap: true
+      }
     ],
     plugins: [typescript({ useTsconfigDeclarationDir: true })],
     // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
     external: [],
     watch: {
-      include: 'src/**',
-    },
-  },
+      include: 'src/**'
+    }
+  }
 ]
