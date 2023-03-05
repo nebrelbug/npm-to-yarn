@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+browser-tests
+rollup.config.ts
+build
