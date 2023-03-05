@@ -40,12 +40,12 @@
   "scripts": {
     "lint": "eslint src/*.ts test/*.spec.ts --ext .js,.ts",
     "prebuild": "rimraf dist",
-    "build": "tsc --module es6 && rollup -c rollup.config.mjs",
+    "build": "rollup -c rollup.config.mjs",
     "start": "rollup -c rollup.config.mjs -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
-    "format": "prettier-standard --format \"{src,test}/**/*.{ts,json,md}\""
+    "format": "prettier-standard --format"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [

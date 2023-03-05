@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 
 export default [
   {
@@ -17,7 +17,16 @@ export default [
         sourcemap: true
       }
     ],
-    plugins: [typescript({ useTsconfigDeclarationDir: true })],
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig.json',
+        compilerOptions: {
+          declarationDir: './types',
+          sourceMap: true,
+          inlineSources: true
+        }
+      })
+    ],
     // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
     external: [],
     watch: {
