@@ -6,9 +6,9 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-![GitHub package.json version (master)](https://img.shields.io/github/package-json/v/nebrelbug/npm-to-yarn/master?label=current%20version)
-[![Travis](https://img.shields.io/travis/com/nebrelbug/npm-to-yarn/master.svg)](https://travis-ci.com/nebrelbug/npm-to-yarn)
-[![All Contributors][logo]](#contributors)
+[![npm](https://img.shields.io/npm/v/npm-to-yarn)](https://www.npmjs.com/package/npm-to-yarn)
+[![License](https://img.shields.io/npm/l/npm-to-yarn)](./LICENSE)
+[![CI](https://github.com/nebrelbug/npm-to-yarn/actions/workflows/ci.yml/badge.svg)](https://github.com/nebrelbug/npm-to-yarn/actions/workflows/ci.yml)
 [![Coveralls](https://img.shields.io/coveralls/nebrelbug/npm-to-yarn.svg)](https://coveralls.io/github/nebrelbug/npm-to-yarn)
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
