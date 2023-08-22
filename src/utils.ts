@@ -107,4 +107,5 @@ export const npmCLICommands = [
   'version',
   'view',
   'whoami'
-]
+] as const
+export type npmCLICommands = typeof npmCLICommands[number]
