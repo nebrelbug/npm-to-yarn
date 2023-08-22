@@ -108,4 +108,3 @@ export const npmCLICommands = [
   'view',
   'whoami'
 ]
-

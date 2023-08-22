@@ -2,7 +2,6 @@ import { parse } from './command'
 
 function convertInstallArgs (args: string[]) {
   // bun uses -g and --global flags
-
   // bun mostly conforms to Yarn's CLI
   return args.map(item => {
     switch (item) {
