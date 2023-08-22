@@ -399,7 +399,7 @@ describe('Yarn to NPM tests', () => {
     ['yarn list --pattern "package|package2"', 'npm ls package package2'],
     [
       'yarn list --pattern "@scope/package|@scope/package2"',
-      'npm ls @scope/package @scope/package2',
+      'npm ls @scope/package @scope/package2'
     ],
     ['yarn list --depth 2', 'npm ls --depth 2'],
     ['yarn list --json', 'npm ls --json'],
@@ -420,7 +420,7 @@ describe('Yarn to NPM tests', () => {
     ['yarn pack --filename foobar', 'npm pack --pack-destination foobar'],
     // unsupported
     ['yarn why', "npm why\n# couldn't auto-convert command"],
-    ['yarn upgrade-interactive', "npm upgrade-interactive\n# couldn't auto-convert command"],
+    ['yarn upgrade-interactive', "npm upgrade-interactive\n# couldn't auto-convert command"]
   ]
 
   it.each(tests)('%s', (yarnValue, npmValue) => {
