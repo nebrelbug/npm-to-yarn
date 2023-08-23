@@ -3,7 +3,7 @@
 import convert from '../src'
 
 describe('NPM tests', () => {
-  const tests = [
+  const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [
     // install
     ['npm install', 'yarn install', 'pnpm install', 'bun install'],
     ['npm i', 'yarn install', 'pnpm i', 'bun install'],
@@ -316,7 +316,7 @@ describe('NPM tests', () => {
       'pnpm pack --pack-destination foobar',
       "npm pack --pack-destination foobar\n# couldn't auto-convert command",
     ],
-  ] as [string, string, string, string][]
+  ];
 
   describe('to Yarn', () => {
     it.each(tests)('%s', (npmValue, yarnValue) => {
