@@ -551,8 +551,7 @@
                 break;
             case 'cache':
                 if (args[1] === 'clean') {
-                    args = ['pm', 'cache', 'rm'];
-                    args = args.concat(args.slice(2));
+                    args = ['pm', 'cache', 'rm'].concat(args.slice(2));
                 }
                 else {
                     cmd = 'npm';
