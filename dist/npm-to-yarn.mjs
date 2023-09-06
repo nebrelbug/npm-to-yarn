@@ -203,7 +203,7 @@ function yarnToNPM(_m, command) {
     }
 }
 
-function convertInstallArgs(args) {
+function convertInstallArgs$1(args) {
     if (args.includes('--global') || args.includes('-g')) {
         args.unshift('global');
     }
@@ -239,14 +239,14 @@ var npmToYarnTable = {
             return ['install'];
         }
         args[0] = 'add';
-        return convertInstallArgs(args);
+        return convertInstallArgs$1(args);
     },
     i: function (args) {
         return npmToYarnTable.install(args);
     },
     uninstall: function (args) {
         args[0] = 'remove';
-        return convertInstallArgs(args);
+        return convertInstallArgs$1(args);
     },
     un: function (args) {
         return npmToYarnTable.uninstall(args);
@@ -485,6 +485,132 @@ function npmToPnpm(_m, command) {
     }
 }
 
+function convertInstallArgs(args) {
+    // bun uses -g and --global flags
+    // bun mostly conforms to Yarn's CLI
+    return args.map(function (item) {
+        switch (item) {
+            case '--save-dev':
+            case '--development':
+            case '-D':
+                return '--dev';
+            case '--save-prod':
+            case '-P':
+                return '--production';
+            case '--no-package-lock':
+                return '--no-save';
+            case '--save-optional':
+            case '-O':
+                return '--optional';
+            case '--save-exact':
+            case '-E':
+                return '--exact';
+            case '--save':
+            case '-S':
+                // this is default in bun
+                return '';
+            case '--global':
+            case '-g':
+                return '--global';
+            default:
+                return item;
+        }
+    });
+}
+function npmToBun(_m, command) {
+    var args = parse((command || '').trim());
+    var index = args.findIndex(function (a) { return a === '--'; });
+    if (index >= 0) {
+        args.splice(index, 1);
+    }
+    var cmd = 'bun';
+    switch (args[0]) {
+        case 'install':
+        case 'i':
+            if (args.length === 1) {
+                args = ['install'];
+            }
+            else {
+                args[0] = 'add';
+            }
+            args = convertInstallArgs(args);
+            break;
+        case 'uninstall':
+        case 'un':
+        case 'remove':
+        case 'r':
+        case 'rm':
+            args[0] = 'remove';
+            args = convertInstallArgs(args);
+            break;
+        case 'cache':
+            if (args[1] === 'clean') {
+                args = ['pm', 'cache', 'rm'].concat(args.slice(2));
+            }
+            else {
+                cmd = 'npm';
+            }
+            break;
+        case 'rebuild':
+        case 'rb':
+            args[0] = 'add';
+            args.push('--force');
+            break;
+        case 'run':
+            break;
+        case 'list':
+        case 'ls':
+            // 'npm ls' => 'bun pm ls'
+            args = convertInstallArgs(args);
+            args[0] = 'ls';
+            args.unshift('pm');
+            break;
+        case 'init':
+        case 'create':
+            if (args[1]) {
+                if (args[1].startsWith('@')) {
+                    cmd = 'bunx';
+                    args[1] = args[1].replace('/', '/create-');
+                    args = args.slice(1);
+                }
+                else if (!args[1].startsWith('-')) {
+                    cmd = 'bunx';
+                    args[1] = "create-".concat(args[1]);
+                    args = args.slice(1);
+                }
+                else {
+                    args[0] = 'init';
+                }
+            }
+            break;
+        case 'link':
+        case 'ln':
+            args = convertInstallArgs(args);
+            args[0] = 'link';
+            break;
+        case 'stop':
+        case 'start':
+        case 'unlink':
+            break;
+        case 'test':
+        case 't':
+        case 'tst':
+            args[0] = 'test';
+            args.unshift('run');
+            break;
+        case 'exec':
+            cmd = 'bunx';
+            args.splice(0, 1);
+            break;
+        default:
+            // null == keep `npm` command
+            cmd = 'npm';
+            break;
+    }
+    var filtered = args.filter(Boolean).filter(function (arg) { return arg !== '--'; });
+    return "".concat(cmd, " ").concat(filtered.join(' ')).concat(cmd === 'npm' ? "\n# couldn't auto-convert command" : '').replace('=', ' ');
+}
+
 /**
  * Converts between npm and yarn command
  */
@@ -494,6 +620,9 @@ function convert(str, to) {
     }
     else if (to === 'pnpm') {
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
+    }
+    else if (to === 'bun') {
+        return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun);
     }
     else {
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
