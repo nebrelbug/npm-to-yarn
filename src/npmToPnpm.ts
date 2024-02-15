@@ -123,6 +123,11 @@ const npmToPnpmTable = {
 export function npmToPnpm (_m: string, command: string): string {
   let args = parse((command || '').trim())
 
+  const index = args.findIndex(a => a === '--')
+  if (index >= 0) {
+    args.splice(index, 1)
+  }
+
   if (args[0] in npmToPnpmTable) {
     const converter = npmToPnpmTable[args[0] as keyof typeof npmToPnpmTable]
 

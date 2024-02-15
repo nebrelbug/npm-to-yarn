@@ -168,10 +168,10 @@ describe('NPM tests', () => {
     [
       'npm run test -- --version',
       'yarn run test --version',
-      'pnpm run test -- --version',
+      'pnpm run test --version',
       'bun run test --version',
     ],
-    ['npm run test -- -v', 'yarn run test -v', 'pnpm run test -- -v', 'bun run test -v'],
+    ['npm run test -- -v', 'yarn run test -v', 'pnpm run test -v', 'bun run test -v'],
     ['npm run custom', 'yarn custom', 'pnpm run custom', 'bun run custom'],
     ['npm run add', 'yarn run add', 'pnpm run add', 'bun run add'],
     ['npm run install', 'yarn run install', 'pnpm run install', 'bun run install'],
@@ -180,7 +180,7 @@ describe('NPM tests', () => {
     ['npm exec add', 'yarn run add', 'pnpm exec add', 'bunx add'],
     ['npm exec install', 'yarn run install', 'pnpm exec install', 'bunx install'],
     ['npm exec run', 'yarn run run', 'pnpm exec run', 'bunx run'],
-    ['npm exec custom -- --version', 'yarn custom --version', 'pnpm exec custom -- --version', 'bunx custom --version'],
+    ['npm exec custom -- --version', 'yarn custom --version', 'pnpm exec custom --version', 'bunx custom --version'],
     // test
     ['npm test', 'yarn test', 'pnpm test', 'bun run test'],
     ['npm t', 'yarn test', 'pnpm test', 'bun run test'],
@@ -188,10 +188,10 @@ describe('NPM tests', () => {
     [
       'npm test -- --version',
       'yarn test --version',
-      'pnpm test -- --version',
+      'pnpm test --version',
       'bun run test --version',
     ],
-    ['npm test -- -v', 'yarn test -v', 'pnpm test -- -v', 'bun run test -v'],
+    ['npm test -- -v', 'yarn test -v', 'pnpm test -v', 'bun run test -v'],
     // unchanged
     ['npm start', 'yarn start', 'pnpm start', 'bun start'],
     ['npm stop', 'yarn stop', "npm stop\n# couldn't auto-convert command", 'bun stop'],
