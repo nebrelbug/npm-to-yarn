@@ -470,6 +470,10 @@ var npmToPnpmTable = {
 };
 function npmToPnpm(_m, command) {
     var args = parse((command || '').trim());
+    var index = args.findIndex(function (a) { return a === '--'; });
+    if (index >= 0) {
+        args.splice(index, 1);
+    }
     if (args[0] in npmToPnpmTable) {
         var converter = npmToPnpmTable[args[0]];
         if (typeof converter === 'function') {
