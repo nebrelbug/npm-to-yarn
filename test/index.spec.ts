@@ -427,3 +427,86 @@ describe('Yarn to NPM tests', () => {
     expect(convert(yarnValue, 'npm')).toEqual(npmValue)
   })
 })
+
+describe('NPX tests', () => {
+  const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [
+    [
+      'npx create-next-app',
+      'yarn dlx create-next-app',
+      'pnpm dlx create-next-app',
+      'bun x create-next-app',
+    ],
+    [
+      'npx prettier --help',
+      'yarn dlx prettier --help',
+      'pnpm dlx prettier --help',
+      'bun x prettier --help',
+    ],
+    [
+      'npx prettier -w .',
+      'yarn dlx prettier -w .',
+      'pnpm dlx prettier -w .',
+      'bun x prettier -w .',
+    ],
+    [
+      'npx @neutrinojs/create-project my-app',
+      'yarn dlx @neutrinojs/create-project my-app',
+      'pnpm dlx @neutrinojs/create-project my-app',
+      'bun x @neutrinojs/create-project my-app',
+    ],
+    [
+      'npx create-react-app my-app --template typescript',
+      'yarn dlx create-react-app my-app --template typescript',
+      'pnpm dlx create-react-app my-app --template typescript',
+      'bun x create-react-app my-app --template typescript',
+    ],
+    [
+      'npx vue-cli-service --help',
+      'yarn dlx vue-cli-service --help',
+      'pnpm dlx vue-cli-service --help',
+      'bun x vue-cli-service --help',
+    ],
+    [
+      'npx vue-cli-service serve',
+      'yarn dlx vue-cli-service serve',
+      'pnpm dlx vue-cli-service serve',
+      'bun x vue-cli-service serve',
+    ],
+    [
+      'npx json-server ./test.json',
+      'yarn dlx json-server ./test.json',
+      'pnpm dlx json-server ./test.json',
+      'bun x json-server ./test.json',
+    ],
+    [
+      'npx envinfo --preset react',
+      'yarn dlx envinfo --preset react',
+      'pnpm dlx envinfo --preset react',
+      'bun x envinfo --preset react',
+    ],
+    [
+      'npx npm-upgrade',
+      'yarn dlx npm-upgrade',
+      'pnpm dlx npm-upgrade',
+      'bun x npm-upgrade',
+    ],
+  ]
+
+  describe('to Yarn', () => {
+    it.each(tests)('%s', (npmValue, yarnValue) => {
+      expect(convert(npmValue, 'yarn', true)).toEqual(yarnValue)
+    })
+  })
+
+  describe('to PNPM', () => {
+    it.each(tests)('%s', (npmValue, _yarnValue, pnpmValue) => {
+      expect(convert(npmValue, 'pnpm', true)).toEqual(pnpmValue)
+    })
+  })
+
+  describe('to Bun', () => {
+    it.each(tests)('%s', (npmValue, _yarnValue, _pnpmValue, bunValue) => {
+      expect(convert(npmValue, 'bun', true)).toEqual(bunValue)
+    })
+  })
+})

@@ -108,3 +108,10 @@ export const npmCLICommands = [
   'view',
   'whoami'
 ]
+
+export const executorCommands = {
+  "npm": "npx",
+  "yarn": "yarn dlx",
+  "pnpm": "pnpm dlx",
+  "bun": "bun x"
+}
