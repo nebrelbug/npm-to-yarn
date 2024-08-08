@@ -32,8 +32,12 @@ import convert from 'npm-to-yarn'
 // var convert = require('npm-to-yarn')
 
 convert('npm install squirrelly', 'yarn')
-
 // yarn add squirrelly
+
+// npx conversions
+
+convert('npx create-next-app', 'yarn', true)
+// yarn dlx create-next-app
 ```
 
 `npm-to-yarn` exposes a UMD build, so you can also install it with a CDN (it exposes global variable `n2y`)
@@ -44,7 +48,7 @@ convert('npm install squirrelly', 'yarn')
 /**
  * Converts between npm and yarn command
  */
-export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string
+export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun', executor = false): string
 ```
 
 ## ✔️ Tests
