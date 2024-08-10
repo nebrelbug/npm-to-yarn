@@ -1,3 +1,5 @@
+import { codeToHtml } from 'shiki/index.mjs';
+
 var unchangedCLICommands = [
     'test',
     'login',
@@ -615,21 +617,46 @@ function npmToBun(_m, command) {
     return "".concat(cmd, " ").concat(filtered.join(' ')).concat(cmd === 'npm' ? "\n# couldn't auto-convert command" : '').replace('=', ' ');
 }
 
+function highlight(command, theme) {
+    if (theme === void 0) { theme = "dark"; }
+    codeToHtml(command, {
+        lang: 'javascript',
+        theme: "github-".concat(theme)
+    }).then(function (html) {
+        return html;
+    });
+    return "";
+}
+
 /**
  * Converts between npm and yarn command
  */
-function convert(str, to) {
+function convert(str, to, highlighting, theme) {
+    if (highlighting === void 0) { highlighting = false; }
+    if (theme === void 0) { theme = "dark"; }
     if (to === 'npm') {
-        return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
+        var convertedCommand = str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
+        if (highlighting)
+            return highlight(convertedCommand, theme);
+        return convertedCommand;
     }
     else if (to === 'pnpm') {
-        return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
+        var convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
+        if (highlighting)
+            return highlight(convertedCommand, theme);
+        return convertedCommand;
     }
     else if (to === 'bun') {
-        return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun);
+        var convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun);
+        if (highlighting)
+            return highlight(convertedCommand, theme);
+        return convertedCommand;
     }
     else {
-        return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
+        var convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
+        if (highlighting)
+            return highlight(convertedCommand, theme);
+        return convertedCommand;
     }
 }
 
