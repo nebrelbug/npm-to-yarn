@@ -5,4 +5,4 @@ export declare function convert(str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'
 /**
  * Returns highlighted html string
  */
-export declare function highlight(command: string, theme?: "light" | "dark"): Promise<void>;
+export declare function highlight(command: string, theme?: 'light' | 'dark'): Promise<void>;

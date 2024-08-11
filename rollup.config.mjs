@@ -8,13 +8,19 @@ export default [
         file: 'dist/npm-to-yarn.mjs',
         format: 'es',
         name: 'n2y',
-        sourcemap: true
+        sourcemap: true,
+        globals: {
+          shiki: 'shiki'
+        }
       },
       {
         file: 'dist/npm-to-yarn.umd.js',
         format: 'umd',
         name: 'n2y',
-        sourcemap: true
+        sourcemap: true,
+        globals: {
+          shiki: 'shiki'
+        }
       }
     ],
     plugins: [
@@ -28,7 +34,9 @@ export default [
       })
     ],
     // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-    external: [],
+    external: [
+      'shiki',
+    ],
     watch: {
       include: 'src/**'
     }

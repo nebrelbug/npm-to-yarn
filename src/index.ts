@@ -3,12 +3,12 @@ import { npmToYarn } from './npmToYarn'
 import { npmToPnpm } from './npmToPnpm'
 import { npmToBun } from './npmToBun'
 
-import { codeToHtml } from "shiki"
+import {codeToHtml} from 'shiki';
 
 /**
  * Converts between npm and yarn command
  */
-export function convert(str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string {
+export function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string {
   if (to === 'npm') {
     return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
   } else if (to === 'pnpm') {
@@ -23,11 +23,11 @@ export function convert(str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): strin
 /**
  * Returns highlighted html string
  */
-export async function highlight(command: string, theme: "light" | "dark" = "light") {
+export async function highlight (command: string, theme: 'light' | 'dark' = 'light') {
   const html = await codeToHtml(command, {
-    lang: 'javascript',
+    lang: 'shell',
     theme: `github-${theme}`
   })
 
-  console.log(await html)
+  console.log(html)
 }
