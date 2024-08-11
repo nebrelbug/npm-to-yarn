@@ -697,16 +697,16 @@
     function highlight(command, theme) {
         if (theme === void 0) { theme = 'light'; }
         return __awaiter(this, void 0, void 0, function () {
-            var html;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, shiki.codeToHtml(command, {
                             lang: 'shell',
                             theme: "github-".concat(theme)
+                        }).then(function (html) {
+                            console.log(html);
                         })];
                     case 1:
-                        html = _a.sent();
-                        console.log(html);
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });

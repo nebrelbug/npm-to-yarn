@@ -3,7 +3,7 @@ import { npmToYarn } from './npmToYarn'
 import { npmToPnpm } from './npmToPnpm'
 import { npmToBun } from './npmToBun'
 
-import {codeToHtml} from 'shiki';
+import { codeToHtml } from 'shiki'
 
 /**
  * Converts between npm and yarn command
@@ -24,10 +24,10 @@ export function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): stri
  * Returns highlighted html string
  */
 export async function highlight (command: string, theme: 'light' | 'dark' = 'light') {
-  const html = await codeToHtml(command, {
+    await codeToHtml(command, {
     lang: 'shell',
     theme: `github-${theme}`
+  }).then((html) => {
+    console.log(html)
   })
-
-  console.log(html)
 }
