@@ -1,6 +1,6 @@
 /* global it, expect, describe */
 
-import convert from '../src'
+import { convert } from '../src'
 
 describe('NPM tests', () => {
   const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [

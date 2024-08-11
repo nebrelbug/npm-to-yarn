@@ -3,35 +3,31 @@ import { npmToYarn } from './npmToYarn'
 import { npmToPnpm } from './npmToPnpm'
 import { npmToBun } from './npmToBun'
 
-import { highlight } from './highlight.js'
+import { codeToHtml } from "shiki"
 
 /**
  * Converts between npm and yarn command
  */
-export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun', highlighting = false, theme : "light" | "dark" = "dark"): string {
+export function convert(str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string {
   if (to === 'npm') {
-    const convertedCommand = str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
-    if (highlighting)
-      return highlight(convertedCommand, theme)
-    
-    return convertedCommand
+    return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM)
   } else if (to === 'pnpm') {
-    const convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm)
-    if (highlighting)
-      return highlight(convertedCommand, theme)
-
-    return convertedCommand
+    return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm)
   } else if (to === 'bun') {
-    const convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun)
-    if (highlighting)
-      return highlight(convertedCommand, theme)
-
-    return convertedCommand
+    return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun)
   } else {
-    const convertedCommand = str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn)
-    if (highlighting)
-      return highlight(convertedCommand, theme)
-
-    return convertedCommand
+    return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn)
   }
+}
+
+/**
+ * Returns highlighted html string
+ */
+export async function highlight(command: string, theme: "light" | "dark" = "light") {
+  const html = await codeToHtml(command, {
+    lang: 'javascript',
+    theme: `github-${theme}`
+  })
+
+  console.log(await html)
 }
