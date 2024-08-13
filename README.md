@@ -51,7 +51,7 @@ export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun
 
 Tests can be run with `npm test`. Multiple tests check that parsing, rendering, and compiling return expected results, formatting follows guidelines, and code coverage is at the expected level.
 
-## 📦 Contributing to npm-to-yarn - Setup Guide
+## 📦 Contributing to `npm-to-yarn` - Setup Guide
 
 Install Dependencies
 ```sh copy
@@ -65,7 +65,7 @@ npm run start
 ```
 
 A new file: `npm-to-yarn.mjs` is created in `dist` folder. <br>
-Open node inside the terminal and write the following code to test new changes
+Open `node` inside the terminal and write the following code to test new changes
 ```js
 const npmToYarn = await import("./dist/npm-to-yarn.mjs")
 const convert = npmToYarn.default
