@@ -35,7 +35,7 @@ convert('npm install squirrelly', 'yarn')
 
 // npx conversions
 
-convert('npx create-next-app', 'yarn', true)
+convert('npx create-next-app', 'yarn')
 // yarn dlx create-next-app
 ```
 
@@ -47,7 +47,7 @@ convert('npx create-next-app', 'yarn', true)
 /**
  * Converts between npm and yarn command
  */
-export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun', executor = false): string
+export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string
 ```
 
 ## ✔️ Tests
