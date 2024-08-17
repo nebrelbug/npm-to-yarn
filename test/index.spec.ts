@@ -428,67 +428,70 @@ describe('Yarn to NPM tests', () => {
   })
 })
 
-describe('NPX tests', () => {
-  const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [
+describe('to yarn dlx tests', () => {
+  const tests: [npm: string, yarn: string][] = [
+    // npx -> ...
     [
       'npx create-next-app',
       'yarn dlx create-next-app',
-      'pnpm dlx create-next-app',
-      'bun x create-next-app',
     ],
     [
       'npx prettier --help',
       'yarn dlx prettier --help',
-      'pnpm dlx prettier --help',
-      'bun x prettier --help',
     ],
     [
       'npx prettier -w .',
       'yarn dlx prettier -w .',
-      'pnpm dlx prettier -w .',
-      'bun x prettier -w .',
     ],
     [
       'npx @neutrinojs/create-project my-app',
       'yarn dlx @neutrinojs/create-project my-app',
-      'pnpm dlx @neutrinojs/create-project my-app',
-      'bun x @neutrinojs/create-project my-app',
     ],
     [
       'npx create-react-app my-app --template typescript',
       'yarn dlx create-react-app my-app --template typescript',
+    ],
+    // pnpm dlx -> ...
+    [
+      'pnpm dlx create-next-app',
+      'yarn dlx create-next-app',
+    ],
+    [
+      'pnpm dlx prettier --help',
+      'yarn dlx prettier --help',
+    ],
+    [
+      'pnpm dlx prettier -w .',
+      'yarn dlx prettier -w .',
+    ],
+    [
+      'pnpm dlx @neutrinojs/create-project my-app',
+      'yarn dlx @neutrinojs/create-project my-app',
+    ],
+    [
       'pnpm dlx create-react-app my-app --template typescript',
+      'yarn dlx create-react-app my-app --template typescript',
+    ],
+    // bun x -> ...
+    [
+      'bun x create-next-app',
+      'yarn dlx create-next-app',
+    ],
+    [
+      'bun x prettier --help',
+      'yarn dlx prettier --help',
+    ],
+    [
+      'bun x prettier -w .',
+      'yarn dlx prettier -w .',
+    ],
+    [
+      'bun x @neutrinojs/create-project my-app',
+      'yarn dlx @neutrinojs/create-project my-app',
+    ],
+    [
       'bun x create-react-app my-app --template typescript',
-    ],
-    [
-      'npx vue-cli-service --help',
-      'yarn dlx vue-cli-service --help',
-      'pnpm dlx vue-cli-service --help',
-      'bun x vue-cli-service --help',
-    ],
-    [
-      'npx vue-cli-service serve',
-      'yarn dlx vue-cli-service serve',
-      'pnpm dlx vue-cli-service serve',
-      'bun x vue-cli-service serve',
-    ],
-    [
-      'npx json-server ./test.json',
-      'yarn dlx json-server ./test.json',
-      'pnpm dlx json-server ./test.json',
-      'bun x json-server ./test.json',
-    ],
-    [
-      'npx envinfo --preset react',
-      'yarn dlx envinfo --preset react',
-      'pnpm dlx envinfo --preset react',
-      'bun x envinfo --preset react',
-    ],
-    [
-      'npx npm-upgrade',
-      'yarn dlx npm-upgrade',
-      'pnpm dlx npm-upgrade',
-      'bun x npm-upgrade',
+      'yarn dlx create-react-app my-app --template typescript',
     ],
   ]
 
@@ -497,15 +500,151 @@ describe('NPX tests', () => {
       expect(convert(npmValue, 'yarn')).toEqual(yarnValue)
     })
   })
+})
+
+describe('to pnpm dlx tests', () => {
+  const tests: [npm: string, pnpm: string][] = [
+    // npx -> ...
+    [
+      'npx create-next-app',
+      'pnpm dlx create-next-app',
+    ],
+    [
+      'npx prettier --help',
+      'pnpm dlx prettier --help',
+    ],
+    [
+      'npx prettier -w .',
+      'pnpm dlx prettier -w .',
+    ],
+    [
+      'npx @neutrinojs/create-project my-app',
+      'pnpm dlx @neutrinojs/create-project my-app',
+    ],
+    [
+      'npx create-react-app my-app --template typescript',
+      'pnpm dlx create-react-app my-app --template typescript',
+    ],
+    // yarn dlx -> ...
+    [
+      'yarn dlx create-next-app',
+      'pnpm dlx create-next-app',
+    ],
+    [
+      'yarn dlx prettier --help',
+      'pnpm dlx prettier --help',
+    ],
+    [
+      'yarn dlx prettier -w .',
+      'pnpm dlx prettier -w .',
+    ],
+    [
+      'yarn dlx @neutrinojs/create-project my-app',
+      'pnpm dlx @neutrinojs/create-project my-app',
+    ],
+    [
+      'yarn dlx create-react-app my-app --template typescript',
+      'pnpm dlx create-react-app my-app --template typescript',
+    ],
+    // bun x -> ...
+    [
+      'bun x create-next-app',
+      'pnpm dlx create-next-app',
+    ],
+    [
+      'bun x prettier --help',
+      'pnpm dlx prettier --help',
+    ],
+    [
+      'bun x prettier -w .',
+      'pnpm dlx prettier -w .',
+    ],
+    [
+      'bun x @neutrinojs/create-project my-app',
+      'pnpm dlx @neutrinojs/create-project my-app',
+    ],
+    [
+      'bun x create-react-app my-app --template typescript',
+      'pnpm dlx create-react-app my-app --template typescript',
+    ],
+  ]
 
   describe('to PNPM', () => {
-    it.each(tests)('%s', (npmValue, _yarnValue, pnpmValue) => {
+    it.each(tests)('%s', (npmValue, pnpmValue) => {
       expect(convert(npmValue, 'pnpm')).toEqual(pnpmValue)
     })
   })
+})
+
+describe('to bun x tests', () => {
+  const tests: [npm: string, bun: string][] = [
+    // npx -> ...
+    [
+      'npx create-next-app',
+      'bun x create-next-app',
+    ],
+    [
+      'npx prettier --help',
+      'bun x prettier --help',
+    ],
+    [
+      'npx prettier -w .',
+      'bun x prettier -w .',
+    ],
+    [
+      'npx @neutrinojs/create-project my-app',
+      'bun x @neutrinojs/create-project my-app',
+    ],
+    [
+      'npx create-react-app my-app --template typescript',
+      'bun x create-react-app my-app --template typescript',
+    ],
+    // yarn dlx -> ...
+    [
+      'yarn dlx create-next-app',
+      'bun x create-next-app',
+    ],
+    [
+      'yarn dlx prettier --help',
+      'bun x prettier --help',
+    ],
+    [
+      'yarn dlx prettier -w .',
+      'bun x prettier -w .',
+    ],
+    [
+      'yarn dlx @neutrinojs/create-project my-app',
+      'bun x @neutrinojs/create-project my-app',
+    ],
+    [
+      'yarn dlx create-react-app my-app --template typescript',
+      'bun x create-react-app my-app --template typescript',
+    ],
+    // pnpm dlx -> ...
+    [
+      'pnpm dlx create-next-app',
+      'bun x create-next-app',
+    ],
+    [
+      'pnpm dlx prettier --help',
+      'bun x prettier --help',
+    ],
+    [
+      'pnpm dlx prettier -w .',
+      'bun x prettier -w .',
+    ],
+    [
+      'pnpm dlx @neutrinojs/create-project my-app',
+      'bun x @neutrinojs/create-project my-app',
+    ],
+    [
+      'pnpm dlx create-react-app my-app --template typescript',
+      'bun x create-react-app my-app --template typescript',
+    ],
+  ]
 
   describe('to Bun', () => {
-    it.each(tests)('%s', (npmValue, _yarnValue, _pnpmValue, bunValue) => {
+    it.each(tests)('%s', (npmValue, bunValue) => {
       expect(convert(npmValue, 'bun')).toEqual(bunValue)
     })
   })
