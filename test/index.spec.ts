@@ -494,19 +494,19 @@ describe('NPX tests', () => {
 
   describe('to Yarn', () => {
     it.each(tests)('%s', (npmValue, yarnValue) => {
-      expect(convert(npmValue, 'yarn', true)).toEqual(yarnValue)
+      expect(convert(npmValue, 'yarn')).toEqual(yarnValue)
     })
   })
 
   describe('to PNPM', () => {
     it.each(tests)('%s', (npmValue, _yarnValue, pnpmValue) => {
-      expect(convert(npmValue, 'pnpm', true)).toEqual(pnpmValue)
+      expect(convert(npmValue, 'pnpm')).toEqual(pnpmValue)
     })
   })
 
   describe('to Bun', () => {
     it.each(tests)('%s', (npmValue, _yarnValue, _pnpmValue, bunValue) => {
-      expect(convert(npmValue, 'bun', true)).toEqual(bunValue)
+      expect(convert(npmValue, 'bun')).toEqual(bunValue)
     })
   })
 })

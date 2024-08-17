@@ -624,9 +624,8 @@ function npmToBun(_m, command) {
 /**
  * Converts between npm and yarn command
  */
-function convert(str, to, executor) {
-    if (executor === void 0) { executor = false; }
-    if (executor) {
+function convert(str, to) {
+    if (str.includes('npx')) {
         return str.replace("npx", executorCommands[to]);
     }
     else if (to === 'npm') {
