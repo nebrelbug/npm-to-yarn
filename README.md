@@ -74,7 +74,7 @@ convert("npm install react", "bun")
 
 ## Resources
 
-To be added
+npm package - https://www.npmjs.com/package/npm-to-yarn
 
 ## Projects using `npm-to-yarn`
 
