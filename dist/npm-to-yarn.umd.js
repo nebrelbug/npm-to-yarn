@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.n2y = factory());
-})(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.n2y = {}));
+})(this, (function (exports) { 'use strict';
 
     var unchangedCLICommands = [
         'test',
@@ -638,8 +638,19 @@
             return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
         }
     }
+    var convertMultiple = function (str, to) {
+        var commands = [];
+        // one to many
+        if (typeof str === 'string' && Array.isArray(to)) {
+            to.forEach(function (t, index) {
+                commands.push(convert(str, to[index]));
+            });
+        }
+        return commands;
+    };
 
-    return convert;
+    exports.convert = convert;
+    exports.convertMultiple = convertMultiple;
 
 }));
 //# sourceMappingURL=npm-to-yarn.umd.js.map
