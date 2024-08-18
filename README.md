@@ -12,7 +12,6 @@
 [![Coveralls](https://img.shields.io/coveralls/nebrelbug/npm-to-yarn.svg)](https://coveralls.io/github/nebrelbug/npm-to-yarn)
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Dev Dependencies](https://img.shields.io/david/dev/nebrelbug/npm-to-yarn)](https://david-dm.org/nebrelbug/npm-to-yarn?type=dev)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/bengubler)
 
 **Summary**
@@ -50,6 +49,28 @@ export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun
 ## ✔️ Tests
 
 Tests can be run with `npm test`. Multiple tests check that parsing, rendering, and compiling return expected results, formatting follows guidelines, and code coverage is at the expected level.
+
+## 📦 Contributing to `npm-to-yarn` - Setup Guide
+
+Install Dependencies
+```sh copy
+npm install
+```
+
+Run the development server
+
+```sh
+npm run start
+```
+
+A new file: `npm-to-yarn.mjs` is created in `dist` folder. <br>
+Open `node` inside the terminal and write the following code to test new changes
+```js
+const npmToYarn = await import("./dist/npm-to-yarn.mjs")
+const convert = npmToYarn.default
+
+convert("npm install react", "bun")
+```
 
 ## Resources
 
