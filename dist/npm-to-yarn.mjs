@@ -640,6 +640,14 @@ var convertMultiple = function (str, to) {
             commands.push(convert(str, to[index]));
         });
     }
+    // many to one
+    else if (Array.isArray(str) && typeof to === 'string') {
+        str.forEach(function (s, index) {
+            commands.push(convert(s, to));
+        });
+    }
+    // many to many
+    else ;
     return commands;
 };
 

@@ -1,6 +1,6 @@
 /* global it, expect, describe */
 
-import {convert, convertMultiple, type Command } from '../src'
+import { convert, convertMultiple, type Command } from '../src'
 
 describe('NPM tests', () => {
   const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [
@@ -462,11 +462,49 @@ describe("Multiple Convert Tests", () => {
       },
     ]
 
+  // many to one
+  const manyToOneTests: {
+    command: string[],
+    managers: Command,
+    result: string[]
+  }[] = [
+      {
+        command: ["npm install react", "npm install react-dom"],
+        managers: "yarn",
+        result: ["yarn add react", "yarn add react-dom"]
+      },
+      {
+        command: ["npm install squirrelly --save", "npm install react --save-optional"],
+        managers: "pnpm",
+        result: ["pnpm add squirrelly", "pnpm add react --save-optional"]
+      },
+      {
+        command: ["npm install squirrelly -E", "npm install react --save-prod"],
+        managers: "bun",
+        result: ["bun add squirrelly --exact", "bun add react --production"]
+      },
+      {
+        command: ["npm install squirrelly --save-optional", "npm install react --save-prod"],
+        managers: "yarn",
+        result: ["yarn add squirrelly --optional", "yarn add react --production"]
+      },
+      {
+        command: ["npm outdated", "npm outdated react"],
+        managers: "pnpm",
+        result: ["pnpm outdated", "pnpm outdated react"]
+      },
+    ]
+  // many to many
+
   describe("One to Many", () => {
-    it.each(oneToManyTests)('%s', (tests) => {
-      expect(convertMultiple(tests.command, tests.managers)).toEqual(tests.result)
+    it.each(oneToManyTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
     })
   })
-  // many to one
-  // many to many
+
+  describe("Many to One", () => {
+    it.each(manyToOneTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
+  })
 })

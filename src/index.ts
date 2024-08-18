@@ -32,6 +32,9 @@ export const convertMultiple = (str: string | string[], to: Command | Command[])
   }
   // many to one
   else if (Array.isArray(str) && typeof to === 'string') {
+    str.forEach((s, index) => {
+      commands.push(convert(s, to))
+    })
   }
   // many to many
   else if (Array.isArray(str) && Array.isArray(to)) {
