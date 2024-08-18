@@ -638,7 +638,7 @@
             return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
         }
     }
-    var convertMultiple = function (str, to) {
+    function convertMultiple(str, to) {
         var commands = [];
         // one to many
         if (typeof str === 'string' && Array.isArray(to)) {
@@ -661,7 +661,7 @@
             });
         }
         return commands;
-    };
+    }
 
     exports.convert = convert;
     exports.convertMultiple = convertMultiple;

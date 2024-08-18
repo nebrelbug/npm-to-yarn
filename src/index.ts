@@ -21,7 +21,7 @@ export function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): stri
 }
 
 
-export const convertMultiple = (str: string | string[], to: Command | Command[]): string[] => {
+export function convertMultiple (str: string | string[], to: Command | Command[]): string[] {
   const commands : string[] = []
 
   // one to many

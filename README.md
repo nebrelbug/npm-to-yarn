@@ -25,7 +25,7 @@
 ## 📜 Docs
 
 ```js
-import convert from 'npm-to-yarn'
+import { convert, convertMultiple } from 'npm-to-yarn'
 
 // or
 // var convert = require('npm-to-yarn')
@@ -33,6 +33,23 @@ import convert from 'npm-to-yarn'
 convert('npm install squirrelly', 'yarn')
 
 // yarn add squirrelly
+
+// one to many conversions
+convertMultiple("npm i next", ["pnpm", "bun"])
+// ["pnpm add next", "bun add next"]
+
+// many to one
+convertMultiple(["npm i eslint", "pnpm add react"], "yarn")
+// ["yarn add eslint", "yarn add react"]
+
+// many to many
+convertMultiple(["bun add rollup", "npm i express"], ["yarn", "pnpm"])
+/*
+[
+    ["yarn add rollup", "yarn add express"], 
+    ["pnpm add rollup", "pnpm add express"]
+]
+*/
 ```
 
 `npm-to-yarn` exposes a UMD build, so you can also install it with a CDN (it exposes global variable `n2y`)
@@ -43,7 +60,8 @@ convert('npm install squirrelly', 'yarn')
 /**
  * Converts between npm and yarn command
  */
-export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string
+export function convert (str: string, to: Command): string
+export function convertMultiple = (str: string | string[], to: Command | Command[]): string[] 
 ```
 
 ## ✔️ Tests

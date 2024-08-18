@@ -632,7 +632,7 @@ function convert(str, to) {
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
     }
 }
-var convertMultiple = function (str, to) {
+function convertMultiple(str, to) {
     var commands = [];
     // one to many
     if (typeof str === 'string' && Array.isArray(to)) {
@@ -655,7 +655,7 @@ var convertMultiple = function (str, to) {
         });
     }
     return commands;
-};
+}
 
 export { convert, convertMultiple };
 //# sourceMappingURL=npm-to-yarn.mjs.map
