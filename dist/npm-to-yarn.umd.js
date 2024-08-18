@@ -642,18 +642,24 @@
         var commands = [];
         // one to many
         if (typeof str === 'string' && Array.isArray(to)) {
-            to.forEach(function (t, index) {
-                commands.push(convert(str, to[index]));
+            to.forEach(function (t) {
+                commands.push(convert(str, t));
             });
         }
         // many to one
         else if (Array.isArray(str) && typeof to === 'string') {
-            str.forEach(function (s, index) {
+            str.forEach(function (s) {
                 commands.push(convert(s, to));
             });
         }
         // many to many
-        else ;
+        else if (Array.isArray(str) && Array.isArray(to)) {
+            to.forEach(function (t) {
+                str.forEach(function (s) {
+                    commands.push(convert(s, t));
+                });
+            });
+        }
         return commands;
     };
 

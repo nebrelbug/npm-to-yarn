@@ -429,7 +429,6 @@ describe('Yarn to NPM tests', () => {
 })
 
 describe("Multiple Convert Tests", () => {
-  // one to many
   const oneToManyTests: {
     command: string,
     managers: Command[],
@@ -462,7 +461,6 @@ describe("Multiple Convert Tests", () => {
       },
     ]
 
-  // many to one
   const manyToOneTests: {
     command: string[],
     managers: Command,
@@ -494,7 +492,39 @@ describe("Multiple Convert Tests", () => {
         result: ["pnpm outdated", "pnpm outdated react"]
       },
     ]
-  // many to many
+
+
+  const manyToManyTests: {
+    command: string[],
+    managers: Command[],
+    result: string[]
+  }[] = [
+      {
+        command: ["npm install react", "npm install react-dom"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn add react", "yarn add react-dom", "pnpm add react", "pnpm add react-dom"]
+      },
+      {
+        command: ["npm install squirrelly --save", "npm install react --save-optional"],
+        managers: ["yarn", "bun"],
+        result: ["yarn add squirrelly", "yarn add react --optional", "bun add squirrelly", "bun add react --optional"]
+      },
+      {
+        command: ["npm install squirrelly -E", "npm install react --save-prod"],
+        managers: ["pnpm", "bun"],
+        result: ["pnpm add squirrelly -E", "pnpm add react --save-prod", "bun add squirrelly --exact", "bun add react --production"]
+      },
+      {
+        command: ["npm install squirrelly --save-optional", "npm install react --save-prod", "npm install squirrelly --save-prod"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn add squirrelly --optional", "yarn add react --production", "yarn add squirrelly --production", "pnpm add squirrelly --save-optional", "pnpm add react --save-prod", "pnpm add squirrelly --save-prod"]
+      },
+      {
+        command: ["npm outdated", "npm outdated react"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn outdated", "yarn outdated react", "pnpm outdated", "pnpm outdated react"]
+      }
+    ]
 
   describe("One to Many", () => {
     it.each(oneToManyTests)('%s', (test) => {
@@ -504,6 +534,12 @@ describe("Multiple Convert Tests", () => {
 
   describe("Many to One", () => {
     it.each(manyToOneTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
+  })
+
+  describe("Many to Many", () => {
+    it.each(manyToManyTests)('%s', (test) => {
       expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
     })
   })
