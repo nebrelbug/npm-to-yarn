@@ -337,8 +337,8 @@ describe('NPM tests', () => {
   })
 })
 
-describe('Yarn to NPM tests', () => {
-  const tests = [
+describe('Yarn tests', () => {
+  const yarnToNpmTests = [
     // install
     ['yarn', 'npm install'],
     ['yarn install', 'npm install'],
@@ -423,7 +423,244 @@ describe('Yarn to NPM tests', () => {
     ['yarn upgrade-interactive', "npm upgrade-interactive\n# couldn't auto-convert command"]
   ]
 
-  it.each(tests)('%s', (yarnValue, npmValue) => {
-    expect(convert(yarnValue, 'npm')).toEqual(npmValue)
+  const yarnToPnpmTests = [
+    ['yarn install', 'pnpm install'],
+    ['yarn add squirrelly', 'pnpm add squirrelly'],
+    ['yarn add squirrelly --no-lockfile', 'pnpm add squirrelly --frozen-lockfile'],
+    ['yarn add squirrelly --optional', 'pnpm add squirrelly --save-optional'],
+    ['yarn add squirrelly --exact', 'pnpm add squirrelly --save-exact'],
+    ['yarn add squirrelly --production', 'pnpm add squirrelly --save-prod'],
+    ['yarn add squirrelly --dev', 'pnpm add squirrelly --save-dev'],
+    ['yarn add --force', 'pnpm rebuild'],
+    ['yarn add package --force', 'pnpm add package --force'],
+    ['yarn remove squirrelly', 'pnpm remove squirrelly'],
+    ['yarn remove squirrelly --dev', 'pnpm remove squirrelly --save-dev'],
+    ['yarn cache clean', 'pnpm cache clear'],
+    ['yarn grunt', 'pnpm run grunt'],
+    ['yarn global add squirrelly', 'pnpm add squirrelly --global'],
+    ['yarn global remove squirrelly', 'pnpm remove squirrelly --global'],
+    ['yarn global squirrelly', "pnpm global squirrelly\n# couldn't auto-convert command"],
+    ['yarn global list', 'pnpm ls --global'],
+    ['yarn version', 'pnpm version'],
+    ['yarn version --major', 'pnpm version major'],
+    ['yarn version --minor', 'pnpm version minor'],
+    ['yarn version --patch', 'pnpm version patch'],
+    ['yarn init', 'pnpm init'],
+    ['yarn init -y', 'pnpm init -y'],
+    ['yarn init --yes', 'pnpm init --yes'],
+    ['yarn init --private', 'pnpm init --private'],
+    ['yarn init --unknown-arg', 'pnpm init --unknown-arg'],
+    ['yarn create esm --yes', 'pnpm init esm --yes'],
+    ['yarn create @scope/my-package', 'pnpm init @scope/my-package'],
+    ['yarn create react-app ./my-react-app', 'pnpm init react-app ./my-react-app'],
+  ]
+
+  const yarnToBunTests = [
+    ['yarn', 'bun install'],
+    ['yarn install', 'bun install'],
+    ['yarn add squirrelly', 'bun add squirrelly'],
+    ['yarn add squirrelly --no-lockfile', 'bun add squirrelly --no-save'],
+    ['yarn add squirrelly --optional', 'bun add squirrelly --optional'],
+    ['yarn add squirrelly --exact', 'bun add squirrelly --exact'],
+    ['yarn add squirrelly --production', 'bun add squirrelly --production'],
+    ['yarn add squirrelly --dev', 'bun add squirrelly --dev'],
+    ['yarn add --force', 'bun add --force'],
+    ['yarn add package --force', 'bun add package --force'],
+    ['yarn remove squirrelly', 'bun remove squirrelly'],
+    ['yarn remove squirrelly --dev', 'bun remove squirrelly --dev'],
+    ['yarn cache clean', 'bun pm cache rm'],
+    ['yarn grunt', 'bun run grunt'],
+    ['yarn global add squirrelly', 'bun add squirrelly --global'],
+    ['yarn global remove squirrelly', 'bun remove squirrelly --global'],
+    ['yarn global squirrelly', "bun global squirrelly\n# couldn't auto-convert command"],
+    ['yarn global list', 'bun pm ls --global'],
+    ['yarn version', 'bun version'],
+    ['yarn version --major', 'bun version --major'],
+    ['yarn version --minor', 'bun version --minor'],
+    ['yarn version --patch', 'bun version --patch'],
+    ['yarn init', 'bun init'],
+    ['yarn init -y', 'bun init -y'],
+    ['yarn init --yes', 'bun init --yes'],
+    ['yarn init --private', 'bun init --private'],
+    ['yarn init --unknown-arg', 'bun init --unknown-arg'],
+    ['yarn create esm --yes', 'bunx create-esm --yes'],
+    ['yarn create @scope/my-package', 'bunx @scope/create-my-package'],
+    ['yarn create react-app ./my-react-app', 'bunx create-react-app ./my-react-app'],
+  ]
+
+  describe("Yarn to Npm tests", () => {
+    it.each(yarnToNpmTests)('%s', (yarnValue, npmValue) => {
+      expect(convert(yarnValue, 'npm')).toEqual(npmValue)
+    })
+  })
+
+  describe("Yarn to PNPM tests", () => {
+    it.each(yarnToPnpmTests)('%s', (yarnValue, pnpmValue) => {
+      expect(convert(yarnValue, 'pnpm')).toEqual(pnpmValue)
+    })
+  })
+
+  describe("Yarn to Bun tests", () => {
+    it.each(yarnToBunTests)('%s', (yarnValue, bunValue) => {
+      expect(convert(yarnValue, 'bun')).toEqual(bunValue)
+    })
+  })
+})
+
+describe('PNPM tests', () => {
+  const pnpmToNpmTests = [
+    ['pnpm', 'npm install'],
+    ['pnpm install', 'npm install'],
+    ['pnpm add squirrelly', 'npm install squirrelly'],
+    ['pnpm add squirrelly --frozen-lockfile', 'npm install squirrelly --no-package-lock'],
+    ['pnpm add squirrelly --save-optional', 'npm install squirrelly --save-optional'],
+    ['pnpm add squirrelly --save-exact', 'npm install squirrelly --save-exact'],
+    ['pnpm add squirrelly --save-prod', 'npm install squirrelly --save-prod'],
+    ['pnpm add squirrelly --save-dev', 'npm install squirrelly --save-dev'],
+    ['pnpm rebuild', 'npm rebuild'],
+    ['pnpm rebuild --force', 'npm rebuild --force'],
+    ['pnpm add package --force', 'npm install package --force'],
+    ['pnpm remove squirrelly', 'npm uninstall squirrelly'],
+    ['pnpm remove squirrelly --save-dev', 'npm uninstall squirrelly --save-dev'],
+    ['pnpm cache clear', 'npm cache clean'],
+    ['pnpm grunt', 'npm run grunt'],
+    ['pnpm run', 'npm run'],
+    ['pnpm run custom', 'npm run custom'],
+  ]
+
+  const pnpmToYarnTests = [
+    ['pnpm', 'yarn install'],
+    ['pnpm install', 'yarn install'],
+    ['pnpm add squirrelly', 'yarn add squirrelly'],
+    ['pnpm add squirrelly --frozen-lockfile', 'yarn add squirrelly --no-lockfile'],
+    ['pnpm add squirrelly --save-optional', 'yarn add squirrelly --optional'],
+    ['pnpm add squirrelly --save-exact', 'yarn add squirrelly --exact'],
+    ['pnpm add squirrelly --save-prod', 'yarn add squirrelly --production'],
+    ['pnpm add squirrelly --save-dev', 'yarn add squirrelly --dev'],
+    ['pnpm rebuild', 'yarn add --force'],
+    ['pnpm rebuild --force', 'yarn add --force'],
+    ['pnpm add package --force', 'yarn add package --force'],
+    ['pnpm remove squirrelly', 'yarn remove squirrelly'],
+    ['pnpm remove squirrelly --save-dev', 'yarn remove squirrelly --dev'],
+    ['pnpm cache clear', 'yarn cache clean'],
+    ['pnpm grunt', 'yarn run grunt'],
+    ['pnpm run', 'yarn run'],
+    ['pnpm run custom', 'yarn run custom'],
+  ]
+
+  const pnpmToBunTests = [
+    ['pnpm', 'bun install'],
+    ['pnpm install', 'bun install'],
+    ['pnpm add squirrelly', 'bun add squirrelly'],
+    ['pnpm add squirrelly --frozen-lockfile', 'bun add squirrelly --no-save'],
+    ['pnpm add squirrelly --save-optional', 'bun add squirrelly --optional'],
+    ['pnpm add squirrelly --save-exact', 'bun add squirrelly --exact'],
+    ['pnpm add squirrelly --save-prod', 'bun add squirrelly --production'],
+    ['pnpm add squirrelly --save-dev', 'bun add squirrelly --dev'],
+    ['pnpm rebuild', 'bun add --force'],
+    ['pnpm rebuild --force', 'bun add --force'],
+    ['pnpm add package --force', 'bun add package --force'],
+    ['pnpm remove squirrelly', 'bun remove squirrelly'],
+    ['pnpm remove squirrelly --save-dev', 'bun remove squirrelly --dev'],
+    ['pnpm cache clear', 'bun pm cache rm'],
+    ['pnpm grunt', 'bun run grunt'],
+    ['pnpm run', 'bun run'],
+    ['pnpm run custom', 'bun run custom'],
+  ]
+
+  describe("PNPM to Npm tests", () => {
+    it.each(pnpmToNpmTests)('%s', (pnpmValue, npmValue) => {
+      expect(convert(pnpmValue, 'npm')).toEqual(npmValue)
+    })
+  })
+
+  describe("PNPM to Yarn tests", () => {
+    it.each(pnpmToYarnTests)('%s', (pnpmValue, yarnValue) => {
+      expect(convert(pnpmValue, 'yarn')).toEqual(yarnValue)
+    })
+  })
+
+  describe("PNPM to Bun tests", () => {
+    it.each(pnpmToBunTests)('%s', (pnpmValue, bunValue) => {
+      expect(convert(pnpmValue, 'bun')).toEqual(bunValue)
+    })
+  })
+
+})
+
+describe('Bun tests', () => {
+  const bunToNpmTests = [
+    ['bun', 'npm install'],
+    ['bun install', 'npm install'],
+    ['bun add squirrelly', 'npm install squirrelly'],
+    ['bun add squirrelly --no-save', 'npm install squirrelly --no-save'],
+    ['bun add squirrelly --optional', 'npm install squirrelly --save-optional'],
+    ['bun add squirrelly --exact', 'npm install squirrelly --save-exact'],
+    ['bun add squirrelly --production', 'npm install squirrelly --save-prod'],
+    ['bun add squirrelly --dev', 'npm install squirrelly --save-dev'],
+    ['bun add --force', 'npm rebuild'],
+    ['bun add package --force', 'npm install package --force'],
+    ['bun remove squirrelly', 'npm uninstall squirrelly'],
+    ['bun remove squirrelly --dev', 'npm uninstall squirrelly --save-dev'],
+    ['bun pm cache rm', 'npm cache clean'],
+    ['bun grunt', 'npm run grunt'],
+    ['bun run', 'npm run'],
+    ['bun run custom', 'npm run custom'],
+  ]
+
+  const bunToYarnTests = [
+    ['bun', 'yarn install'],
+    ['bun install', 'yarn install'],
+    ['bun add squirrelly', 'yarn add squirrelly'],
+    ['bun add squirrelly --no-save', 'yarn add squirrelly --no-save'],
+    ['bun add squirrelly --optional', 'yarn add squirrelly --optional'],
+    ['bun add squirrelly --exact', 'yarn add squirrelly --exact'],
+    ['bun add squirrelly --production', 'yarn add squirrelly --production'],
+    ['bun add squirrelly --dev', 'yarn add squirrelly --dev'],
+    ['bun add --force', 'yarn add --force'],
+    ['bun add package --force', 'yarn add package --force'],
+    ['bun remove squirrelly', 'yarn remove squirrelly'],
+    ['bun remove squirrelly --dev', 'yarn remove squirrelly --dev'],
+    ['bun pm cache rm', 'yarn cache clean'],
+    ['bun grunt', 'yarn run grunt'],
+    ['bun run', 'yarn run'],
+    ['bun run custom', 'yarn run custom'],
+  ]
+
+  const bunToPnpmTests = [
+    ['bun', 'pnpm install'],
+    ['bun install', 'pnpm install'],
+    ['bun add squirrelly', 'pnpm add squirrelly'],
+    ['bun add squirrelly --no-save', 'pnpm add squirrelly --no-save'],
+    ['bun add squirrelly --optional', 'pnpm add squirrelly --save-optional'],
+    ['bun add squirrelly --exact', 'pnpm add squirrelly --save-exact'],
+    ['bun add squirrelly --production', 'pnpm add squirrelly --save-prod'],
+    ['bun add squirrelly --dev', 'pnpm add squirrelly --save-dev'],
+    ['bun add --force', 'pnpm rebuild'],
+    ['bun add package --force', 'pnpm add package --force'],
+    ['bun remove squirrelly', 'pnpm remove squirrelly'],
+    ['bun remove squirrelly --dev', 'pnpm remove squirrelly --save-dev'],
+    ['bun pm cache rm', 'pnpm cache clear'],
+    ['bun grunt', 'pnpm run grunt'],
+    ['bun run', 'pnpm run'],
+    ['bun run custom', 'pnpm run custom'],
+  ]
+
+  describe("Bun to Npm tests", () => {
+    it.each(bunToNpmTests)('%s', (bunValue, npmValue) => {
+      expect(convert(bunValue, 'npm')).toEqual(npmValue)
+    })
+  })
+
+  describe("Bun to Yarn tests", () => {
+    it.each(bunToYarnTests)('%s', (bunValue, yarnValue) => {
+      expect(convert(bunValue, 'yarn')).toEqual(yarnValue)
+    })
+  })
+
+  describe("Bun to PNPM tests", () => {
+    it.each(bunToPnpmTests)('%s', (bunValue, pnpmValue) => {
+      expect(convert(bunValue, 'pnpm')).toEqual(pnpmValue)
+    })
   })
 })
