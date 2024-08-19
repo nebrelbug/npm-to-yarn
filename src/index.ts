@@ -1,7 +1,7 @@
-import { yarnToNPM } from './yarnToNpm'
-import { npmToYarn } from './npmToYarn'
-import { npmToPnpm } from './npmToPnpm'
-import { npmToBun } from './npmToBun'
+import { yarnToNPM, pnpmToNpm, bunToNpm } from './toNpm'
+import { npmToYarn, pnpmToYarn, bunToYarn } from './toYarn'
+import { npmToPnpm, yarnToPnpm, bunToPnpm } from './toPnpm'
+import { npmToBun, yarnToBun, pnpmToBun } from './toBun'
 
 import { getManager, isOtherManagerCommand } from './lib'
 

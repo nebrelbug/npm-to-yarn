@@ -142,3 +142,11 @@ export function npmToPnpm (_m: string, command: string): string {
     return 'npm ' + command + "\n# couldn't auto-convert command"
   }
 }
+
+export function yarnToPnpm () {
+  return 'yarn to pnpm'
+}
+
+export function bunToPnpm () {
+  return 'bun to pnpm'
+}

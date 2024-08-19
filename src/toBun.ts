@@ -142,3 +142,11 @@ export function npmToBun (_m: string, command: string): string {
     cmd === 'npm' ? "\n# couldn't auto-convert command" : ''
   }`.replace('=', ' ')
 }
+
+export function yarnToBun() {
+  return 'yarn to bun'
+}
+
+export function pnpmToBun() {
+  return 'pnpm to bun'
+}
