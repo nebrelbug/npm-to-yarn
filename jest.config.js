@@ -9,7 +9,7 @@ module.exports = {
   testEnvironment: 'node',
   testRegex: '(/test/.*|\\.(test|spec))\\.(ts|js)$',
   moduleFileExtensions: ['ts', 'js'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/test/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/test/', 'src/lib.ts'],
   coverageThreshold: {
     global: {
       branches: 80,

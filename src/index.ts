@@ -3,7 +3,7 @@ import { npmToYarn } from './npmToYarn'
 import { npmToPnpm } from './npmToPnpm'
 import { npmToBun } from './npmToBun'
 
-import { getManager, isOtherManagerCommand } from './utils'
+import { getManager, isOtherManagerCommand } from './lib'
 
 /**
  * Converts between npm and yarn command
