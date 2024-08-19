@@ -202,6 +202,12 @@ function yarnToNPM(_m, command) {
         return 'npm ' + command + "\n# couldn't auto-convert command";
     }
 }
+function pnpmToNpm() {
+    return 'pnpm to npm';
+}
+function bunToNpm() {
+    return 'bun to npm';
+}
 
 function convertInstallArgs$1(args) {
     if (args.includes('--global') || args.includes('-g')) {
@@ -352,6 +358,12 @@ function npmToYarn(_m, command) {
         return 'npm ' + command + "\n# couldn't auto-convert command";
     }
 }
+function pnpmToYarn() {
+    return 'pnpm to yarn';
+}
+function bunToYarn() {
+    return 'bun to yarn';
+}
 
 function convertPnpmInstallArgs(args) {
     return args.map(function (item) {
@@ -488,6 +500,12 @@ function npmToPnpm(_m, command) {
         return 'npm ' + command + "\n# couldn't auto-convert command";
     }
 }
+function yarnToPnpm() {
+    return 'yarn to pnpm';
+}
+function bunToPnpm() {
+    return 'bun to pnpm';
+}
 
 function convertInstallArgs(args) {
     // bun uses -g and --global flags
@@ -614,21 +632,94 @@ function npmToBun(_m, command) {
     var filtered = args.filter(Boolean).filter(function (arg) { return arg !== '--'; });
     return "".concat(cmd, " ").concat(filtered.join(' ')).concat(cmd === 'npm' ? "\n# couldn't auto-convert command" : '').replace('=', ' ');
 }
+function yarnToBun() {
+    return 'yarn to bun';
+}
+function pnpmToBun() {
+    return 'pnpm to bun';
+}
+
+/**
+ * Returns the current package manager
+ */
+function getManager(command) {
+    if (command.startsWith('yarn')) {
+        return 'yarn';
+    }
+    else if (command.startsWith('pnpm')) {
+        return 'pnpm';
+    }
+    else if (command.startsWith('bun')) {
+        return 'bun';
+    }
+    return 'npm';
+}
+/**
+ * Checks whether the command is other than npm command
+ */
+function isOtherManagerCommand(command) {
+    var currentManager = getManager(command);
+    return currentManager !== 'npm';
+}
 
 /**
  * Converts between npm and yarn command
  */
 function convert(str, to) {
     if (to === 'npm') {
+        // pnpm | bun to npm
+        if (isOtherManagerCommand(str)) {
+            var manager = getManager(str);
+            if (manager === 'pnpm') {
+                return str.replace(/pnpm(?: +([^&\n\r]*))?/gm, pnpmToNpm);
+            }
+            else if (manager === 'bun') {
+                return str.replace(/bun(?: +([^&\n\r]*))?/gm, bunToNpm);
+            }
+        }
+        // yarn to npm
         return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToNPM);
     }
     else if (to === 'pnpm') {
+        // yarn | bun to pnpm
+        if (isOtherManagerCommand(str)) {
+            var manager = getManager(str);
+            if (manager === 'yarn') {
+                return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToPnpm);
+            }
+            else if (manager === 'bun') {
+                return str.replace(/bun(?: +([^&\n\r]*))?/gm, bunToPnpm);
+            }
+        }
+        // npm to pnpm
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
     }
     else if (to === 'bun') {
+        // yarn | pnpm to bun
+        if (isOtherManagerCommand(str)) {
+            var manager = getManager(str);
+            if (manager === 'yarn') {
+                return str.replace(/yarn(?: +([^&\n\r]*))?/gm, yarnToBun);
+            }
+            else if (manager === 'pnpm') {
+                return str.replace(/pnpm(?: +([^&\n\r]*))?/gm, pnpmToBun);
+            }
+        }
+        // npm to bun
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun);
     }
     else {
+        // pnpm | bun to yarn
+        if (isOtherManagerCommand(str)) {
+            var manager = getManager(str);
+            if (manager === 'pnpm') {
+                return str.replace(/pnpm(?: +([^&\n\r]*))?/gm, pnpmToYarn);
+            }
+            else if (manager === 'bun') {
+                return str.replace(/bun(?: +([^&\n\r]*))?/gm, bunToYarn);
+            }
+        }
+        // npm to yarn
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
     }
 }
