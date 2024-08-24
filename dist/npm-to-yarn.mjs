@@ -500,8 +500,9 @@ function npmToPnpm(_m, command) {
         return 'npm ' + command + "\n# couldn't auto-convert command";
     }
 }
-function yarnToPnpm() {
-    return 'yarn to pnpm';
+function yarnToPnpm(_m, command) {
+    var npmCommand = yarnToNPM(_m, command);
+    return npmCommand.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm);
 }
 function bunToPnpm() {
     return 'bun to pnpm';
