@@ -157,3 +157,11 @@ export function npmToYarn (_m: string, command: string): string {
     return 'npm ' + command + "\n# couldn't auto-convert command"
   }
 }
+
+export function pnpmToYarn() {
+  return 'pnpm to yarn'
+}
+
+export function bunToYarn() {
+  return 'bun to yarn'
+}

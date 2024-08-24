@@ -1,4 +1,5 @@
 import { parse } from './command'
+import { yarnToNPM } from './toNpm'
 
 function convertPnpmInstallArgs (args: string[]) {
   return args.map(item => {
@@ -141,4 +142,13 @@ export function npmToPnpm (_m: string, command: string): string {
   } else {
     return 'npm ' + command + "\n# couldn't auto-convert command"
   }
+}
+
+export function yarnToPnpm (_m: string, command: string): string {
+  const npmCommand = yarnToNPM(_m, command)
+  return npmCommand.replace(/npm(?: +([^&\n\r]*))?/gm, npmToPnpm)
+}
+
+export function bunToPnpm () {
+  return 'bun to pnpm'
 }
