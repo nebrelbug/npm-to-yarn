@@ -639,8 +639,9 @@
         var filtered = args.filter(Boolean).filter(function (arg) { return arg !== '--'; });
         return "".concat(cmd, " ").concat(filtered.join(' ')).concat(cmd === 'npm' ? "\n# couldn't auto-convert command" : '').replace('=', ' ');
     }
-    function yarnToBun() {
-        return 'yarn to bun';
+    function yarnToBun(_m, command) {
+        var npmCommand = yarnToNPM(_m, command);
+        return npmCommand.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun);
     }
     function pnpmToBun() {
         return 'pnpm to bun';

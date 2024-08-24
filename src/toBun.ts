@@ -1,4 +1,5 @@
 import { parse } from './command'
+import { yarnToNPM } from './toNpm'
 
 function convertInstallArgs (args: string[]) {
   // bun uses -g and --global flags
@@ -143,8 +144,9 @@ export function npmToBun (_m: string, command: string): string {
   }`.replace('=', ' ')
 }
 
-export function yarnToBun() {
-  return 'yarn to bun'
+export function yarnToBun(_m: string, command: string) {
+  const npmCommand = yarnToNPM(_m, command)
+  return npmCommand.replace(/npm(?: +([^&\n\r]*))?/gm, npmToBun)
 }
 
 export function pnpmToBun() {
