@@ -110,8 +110,8 @@ export const npmCLICommands = [
 ]
 
 export const executorCommands = {
-  "npm": "npx",
-  "yarn": "yarn dlx",
-  "pnpm": "pnpm dlx",
-  "bun": "bun x"
+  npm: 'npx',
+  yarn: 'yarn dlx',
+  pnpm: 'pnpm dlx',
+  bun: 'bun x'
 }

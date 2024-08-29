@@ -48,10 +48,10 @@ var yarnCLICommands = [
     'workspaces'
 ];
 var executorCommands = {
-    "npm": "npx",
-    "yarn": "yarn dlx",
-    "pnpm": "pnpm dlx",
-    "bun": "bun x"
+    npm: 'npx',
+    yarn: 'yarn dlx',
+    pnpm: 'pnpm dlx',
+    bun: 'bun x'
 };
 
 function parse(command) {
@@ -625,8 +625,17 @@ function npmToBun(_m, command) {
  * Converts between npm and yarn command
  */
 function convert(str, to) {
-    if (str.includes('npx') || str.includes('yarn dlx') || str.includes('pnpm dlx') || str.includes('bun x')) {
-        var executor = str.includes('npx') ? 'npx' : str.includes('yarn dlx') ? 'yarn dlx' : str.includes('pnpm dlx') ? 'pnpm dlx' : 'bun x';
+    if (str.includes('npx') ||
+        str.includes('yarn dlx') ||
+        str.includes('pnpm dlx') ||
+        str.includes('bun x')) {
+        var executor = str.includes('npx')
+            ? 'npx'
+            : str.includes('yarn dlx')
+                ? 'yarn dlx'
+                : str.includes('pnpm dlx')
+                    ? 'pnpm dlx'
+                    : 'bun x';
         return str.replace(executor, executorCommands[to]);
     }
     else if (to === 'npm') {

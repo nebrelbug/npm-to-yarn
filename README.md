@@ -57,6 +57,7 @@ Tests can be run with `npm test`. Multiple tests check that parsing, rendering, 
 ## 📦 Contributing to `npm-to-yarn` - Setup Guide
 
 Install Dependencies
+
 ```sh copy
 npm install
 ```
@@ -69,11 +70,12 @@ npm run start
 
 A new file: `npm-to-yarn.mjs` is created in `dist` folder. <br>
 Open `node` inside the terminal and write the following code to test new changes
+
 ```js
-const npmToYarn = await import("./dist/npm-to-yarn.mjs")
+const npmToYarn = await import('./dist/npm-to-yarn.mjs')
 const convert = npmToYarn.default
 
-convert("npm install react", "bun")
+convert('npm install react', 'bun')
 ```
 
 ## Resources
