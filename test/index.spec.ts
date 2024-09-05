@@ -541,6 +541,9 @@ describe("Multiple Convert Tests", () => {
   describe("Many to Many", () => {
     it.each(manyToManyTests)('%s', (test) => {
       expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
+  })
+})
 
 describe('to yarn dlx tests', () => {
   const tests: [npm: string, yarn: string][] = [

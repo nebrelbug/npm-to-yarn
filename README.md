@@ -33,6 +33,10 @@ import { convert, convertMultiple } from 'npm-to-yarn'
 convert('npm install squirrelly', 'yarn')
 // yarn add squirrelly
 
+// npx conversions
+convert('npx create-next-app', 'yarn')
+// yarn dlx create-next-app
+
 // one to many conversions
 convertMultiple("npm i next", ["pnpm", "bun"])
 // ["pnpm add next", "bun add next"]
@@ -50,10 +54,6 @@ convertMultiple(["bun add rollup", "npm i express"], ["yarn", "pnpm"])
 ]
 */
 
-// npx conversions
-
-convert('npx create-next-app', 'yarn')
-// yarn dlx create-next-app
 ```
 
 `npm-to-yarn` exposes a UMD build, so you can also install it with a CDN (it exposes global variable `n2y`)

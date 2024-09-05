@@ -11,9 +11,6 @@ type Command = 'npm' | 'yarn' | 'pnpm' | 'bun'
  */
 
 export function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string {
-  if (to === 'npm') {
-
-export default function convert (str: string, to: 'npm' | 'yarn' | 'pnpm' | 'bun'): string {
   if (
     str.includes('npx') ||
     str.includes('yarn dlx') ||
