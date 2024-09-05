@@ -31,7 +31,6 @@ import { convert, convertMultiple } from 'npm-to-yarn'
 // var convert = require('npm-to-yarn')
 
 convert('npm install squirrelly', 'yarn')
-
 // yarn add squirrelly
 
 // one to many conversions
@@ -50,6 +49,11 @@ convertMultiple(["bun add rollup", "npm i express"], ["yarn", "pnpm"])
     ["pnpm add rollup", "pnpm add express"]
 ]
 */
+
+// npx conversions
+
+convert('npx create-next-app', 'yarn')
+// yarn dlx create-next-app
 ```
 
 `npm-to-yarn` exposes a UMD build, so you can also install it with a CDN (it exposes global variable `n2y`)
@@ -71,6 +75,7 @@ Tests can be run with `npm test`. Multiple tests check that parsing, rendering, 
 ## 📦 Contributing to `npm-to-yarn` - Setup Guide
 
 Install Dependencies
+
 ```sh copy
 npm install
 ```
@@ -83,11 +88,12 @@ npm run start
 
 A new file: `npm-to-yarn.mjs` is created in `dist` folder. <br>
 Open `node` inside the terminal and write the following code to test new changes
+
 ```js
-const npmToYarn = await import("./dist/npm-to-yarn.mjs")
+const npmToYarn = await import('./dist/npm-to-yarn.mjs')
 const convert = npmToYarn.default
 
-convert("npm install react", "bun")
+convert('npm install react', 'bun')
 ```
 
 ## Resources
