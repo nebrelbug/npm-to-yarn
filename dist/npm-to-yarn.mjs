@@ -651,6 +651,30 @@ function convert(str, to) {
         return str.replace(/npm(?: +([^&\n\r]*))?/gm, npmToYarn);
     }
 }
+function convertMultiple(str, to) {
+    var commands = [];
+    // one to many
+    if (typeof str === 'string' && Array.isArray(to)) {
+        to.forEach(function (t) {
+            commands.push(convert(str, t));
+        });
+    }
+    // many to one
+    else if (Array.isArray(str) && typeof to === 'string') {
+        str.forEach(function (s) {
+            commands.push(convert(s, to));
+        });
+    }
+    // many to many
+    else if (Array.isArray(str) && Array.isArray(to)) {
+        to.forEach(function (t) {
+            str.forEach(function (s) {
+                commands.push(convert(s, t));
+            });
+        });
+    }
+    return commands;
+}
 
-export { convert as default };
+export { convert, convertMultiple };
 //# sourceMappingURL=npm-to-yarn.mjs.map

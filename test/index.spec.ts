@@ -1,6 +1,6 @@
 /* global it, expect, describe */
 
-import convert from '../src'
+import { convert, convertMultiple, type Command } from '../src'
 
 describe('NPM tests', () => {
   const tests: [npm: string, yarn: string, pnpm: string, bun: string][] = [
@@ -425,6 +425,123 @@ describe('Yarn to NPM tests', () => {
 
   it.each(tests)('%s', (yarnValue, npmValue) => {
     expect(convert(yarnValue, 'npm')).toEqual(npmValue)
+  })
+})
+
+describe("Multiple Convert Tests", () => {
+  const oneToManyTests: {
+    command: string,
+    managers: Command[],
+    result: string[]
+  }[] = [
+      {
+        command: "npm i react",
+        managers: ["bun", "pnpm"],
+        result: ["bun add react", "pnpm add react"]
+      },
+      {
+        command: "npm install squirrelly --save",
+        managers: ["pnpm", "bun"],
+        result: ["pnpm add squirrelly", "bun add squirrelly"]
+      },
+      {
+        command: "npm install squirrelly --save-optional",
+        managers: ["yarn", "pnpm"],
+        result: ["yarn add squirrelly --optional", "pnpm add squirrelly --save-optional"]
+      },
+      {
+        command: "npm install squirrelly -E",
+        managers: ["yarn", "pnpm", "bun"],
+        result: ["yarn add squirrelly --exact", "pnpm add squirrelly -E", "bun add squirrelly --exact"]
+      },
+      {
+        command: "npm install squirrelly --save-prod",
+        managers: ["yarn", "bun"],
+        result: ["yarn add squirrelly --production", "bun add squirrelly --production"]
+      },
+    ]
+
+  const manyToOneTests: {
+    command: string[],
+    managers: Command,
+    result: string[]
+  }[] = [
+      {
+        command: ["npm install react", "npm install react-dom"],
+        managers: "yarn",
+        result: ["yarn add react", "yarn add react-dom"]
+      },
+      {
+        command: ["npm install squirrelly --save", "npm install react --save-optional"],
+        managers: "pnpm",
+        result: ["pnpm add squirrelly", "pnpm add react --save-optional"]
+      },
+      {
+        command: ["npm install squirrelly -E", "npm install react --save-prod"],
+        managers: "bun",
+        result: ["bun add squirrelly --exact", "bun add react --production"]
+      },
+      {
+        command: ["npm install squirrelly --save-optional", "npm install react --save-prod"],
+        managers: "yarn",
+        result: ["yarn add squirrelly --optional", "yarn add react --production"]
+      },
+      {
+        command: ["npm outdated", "npm outdated react"],
+        managers: "pnpm",
+        result: ["pnpm outdated", "pnpm outdated react"]
+      },
+    ]
+
+
+  const manyToManyTests: {
+    command: string[],
+    managers: Command[],
+    result: string[]
+  }[] = [
+      {
+        command: ["npm install react", "npm install react-dom"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn add react", "yarn add react-dom", "pnpm add react", "pnpm add react-dom"]
+      },
+      {
+        command: ["npm install squirrelly --save", "npm install react --save-optional"],
+        managers: ["yarn", "bun"],
+        result: ["yarn add squirrelly", "yarn add react --optional", "bun add squirrelly", "bun add react --optional"]
+      },
+      {
+        command: ["npm install squirrelly -E", "npm install react --save-prod"],
+        managers: ["pnpm", "bun"],
+        result: ["pnpm add squirrelly -E", "pnpm add react --save-prod", "bun add squirrelly --exact", "bun add react --production"]
+      },
+      {
+        command: ["npm install squirrelly --save-optional", "npm install react --save-prod", "npm install squirrelly --save-prod"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn add squirrelly --optional", "yarn add react --production", "yarn add squirrelly --production", "pnpm add squirrelly --save-optional", "pnpm add react --save-prod", "pnpm add squirrelly --save-prod"]
+      },
+      {
+        command: ["npm outdated", "npm outdated react"],
+        managers: ["yarn", "pnpm"],
+        result: ["yarn outdated", "yarn outdated react", "pnpm outdated", "pnpm outdated react"]
+      }
+    ]
+
+  describe("One to Many", () => {
+    it.each(oneToManyTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
+  })
+
+  describe("Many to One", () => {
+    it.each(manyToOneTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
+  })
+
+  describe("Many to Many", () => {
+    it.each(manyToManyTests)('%s', (test) => {
+      expect(convertMultiple(test.command, test.managers)).toEqual(test.result)
+    })
   })
 })
 
