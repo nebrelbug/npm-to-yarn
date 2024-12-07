@@ -227,6 +227,19 @@ describe('NPM tests', () => {
       'pnpm create react-app ./my-react-app',
       'bunx create-react-app ./my-react-app',
     ],
+    // create
+    [
+      'npm create react-app ./my-react-app',
+      'yarn create react-app ./my-react-app',
+      'pnpm create react-app ./my-react-app',
+      'bunx create-react-app ./my-react-app',
+    ],
+    [
+      'npm create vite@latest',
+      'yarn create vite',
+      'pnpm create vite',
+      'bunx create-vite',
+    ],
     // list
     ['npm list', 'yarn list', 'pnpm list', 'bun pm ls'],
     ['npm ls', 'yarn list', 'pnpm ls', 'bun pm ls'],
