@@ -319,8 +319,15 @@ var npmToYarnTable = {
     init: function (args) {
         if (args[1] && !args[1].startsWith('-')) {
             args[0] = 'create';
+            var m = args[1].match(/(.+)@latest/);
+            if (m) {
+                args[1] = m[1];
+            }
         }
         return args.filter(function (item) { return item !== '--scope'; });
+    },
+    create: function (args) {
+        return npmToYarnTable.init(args);
     },
     ln: 'link',
     t: 'test',
@@ -452,8 +459,15 @@ var npmToPnpmTable = {
     init: function (args) {
         if (args[1] && !args[1].startsWith('-')) {
             args[0] = 'create';
+            var m = args[1].match(/(.+)@latest/);
+            if (m) {
+                args[1] = m[1];
+            }
         }
         return args.filter(function (item) { return item !== '--scope'; });
+    },
+    create: function (args) {
+        return npmToPnpmTable.init(args);
     },
     ln: 'link',
     t: 'test',
@@ -585,7 +599,7 @@ function npmToBun(_m, command) {
                 }
                 else if (!args[1].startsWith('-')) {
                     cmd = 'bunx';
-                    args[1] = "create-".concat(args[1]);
+                    args[1] = "create-".concat(args[1].replace('@latest', ''));
                     args = args.slice(1);
                 }
                 else {
