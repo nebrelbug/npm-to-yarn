@@ -97,8 +97,15 @@ const npmToPnpmTable = {
   init (args: string[]) {
     if (args[1] && !args[1].startsWith('-')) {
       args[0] = 'create'
+      const m = args[1].match(/(.+)@latest/)
+      if (m) {
+        args[1] = m[1]
+      }
     }
     return args.filter(item => item !== '--scope')
+  },
+  create (args: string[]) {
+    return npmToPnpmTable.init(args)
   },
   ln: 'link',
   t: 'test',

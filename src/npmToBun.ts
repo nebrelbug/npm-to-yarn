@@ -104,7 +104,7 @@ export function npmToBun (_m: string, command: string): string {
           args = args.slice(1)
         } else if (!args[1].startsWith('-')) {
           cmd = 'bunx'
-          args[1] = `create-${args[1]}`
+          args[1] = `create-${args[1].replace('@latest', '')}`
           args = args.slice(1)
         } else {
           args[0] = 'init'
